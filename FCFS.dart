@@ -1,21 +1,54 @@
 import 'package:flutter/material.dart';
 
+import './main.dart';
 
-//FCFS page stateful class
-class FCFS extends StatefulWidget {
-  @override
-  _FCFSState createState() => _FCFSState();
-}
-
-class _FCFSState extends State<FCFS> {
+class Fcfs extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.black,
-        appBar: AppBar(
-          title: Text('FCFS'),
-          backgroundColor: Colors.red,
+      appBar: AppBar(
+        title: Text('FCFS'),
+      ),
+      body: Container(
+        child: Column(
+          children: <Widget>[
+            Container(
+               child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                 child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                   child: DataTable(
+                     columns: [
+                       DataColumn(label: Text('P'),numeric: false),
+                       DataColumn(label: Text('AT'),numeric: true),
+                       DataColumn(label: Text('BT'),numeric: true),
+                       DataColumn(label: Text('CT'),numeric: true),
+                       DataColumn(label: Text('TAT'),numeric: true),
+                       DataColumn(label: Text('WT'),numeric: true),
+                      ],
+                    rows: [],
+                  )
+                ),
+            )
+          ),
+            Row(
+              children: [
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: (
+                      FloatingActionButton(
+                        child: Icon(
+                          Icons.add,
+                        ),
+                      )
+                  ),
+                )
+              ],
+            ),
+
+          ])
         ),
-      );
+            );
   }
 }
+
