@@ -59,6 +59,7 @@ class fcfsstate extends State{
     return Scaffold(
       appBar: AppBar(
         title: Text('FCFS'),
+        backgroundColor: Colors.red,
       ),
       body: Container(
           child: Column(
@@ -88,6 +89,7 @@ class fcfsstate extends State{
                       alignment: Alignment.bottomRight,
                       child: (
                           FloatingActionButton(
+                            backgroundColor: Colors.red,
                             child: Icon(
                               Icons.add,
                             ),
