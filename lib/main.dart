@@ -21,7 +21,11 @@ class _MyAppState extends State<MyApp> {
         home: Scaffold(
             backgroundColor: Colors.black,
             appBar: AppBar(
-              title: Center(child: Text('CPU scheduling',style: TextStyle(fontFamily:'Pacifico'),)),
+              title: Center(
+                  child: Text(
+                'CPU scheduling',
+                style: TextStyle(fontFamily: 'Pacifico'),
+              )),
               backgroundColor: Colors.red,
             ),
             body: Center(

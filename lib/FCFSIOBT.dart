@@ -1,14 +1,16 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
-import './FCFSIOBT.dart';
+import 'package:flutter/services.dart';
+import './FCFS.dart';
 
 //FCFS page stateful class
-class FCFS extends StatefulWidget {
+class FCFSIOBT extends StatefulWidget {
   @override
-  _FCFSState createState() => _FCFSState();
+  _FCFSIOBTState createState() => _FCFSIOBTState();
 }
 
-class _FCFSState extends State<FCFS> {
+class _FCFSIOBTState extends State<FCFSIOBT> {
   var _counter = 0;
 
   List<DataRow> _rowList = [];
@@ -17,28 +19,41 @@ class _FCFSState extends State<FCFS> {
 
   void _calculate() {
     int cal = 0, st = 0;
-    List<bool> vis;
-    vis = new List<bool>.filled(_counter, false);
-    while (cal != _counter) {
+    List<int> vis, artime;
+    vis = new List<int>.filled(_counter, 0);
+    artime = new List<int>.filled(_counter, 0);
+    for (int i = 0; i < _counter; ++i) artime[i] = _data[i][0];
+    while (cal != 2 * _counter) {
       var mn = 100, loc = 0;
       for (var i = 0; i < _counter; ++i) {
-        if (_data[i][0] < mn && !vis[i]) {
+        if (_data[i][0] < mn && (vis[i] == 0 || vis[i] == 1)) {
           mn = _data[i][0];
           loc = i;
         }
       }
-      vis[loc] = true;
       cal++;
-      _data[loc][2] = max(_data[loc][0], st) + _data[loc][1];
-      st = _data[loc][2];
-      _data[loc][3] = _data[loc][2] - _data[loc][0];
-      _data[loc][4] = _data[loc][3] - _data[loc][1];
-      for (int i = 0; i < 5; ++i) _datas[loc][i] = _data[loc][i].toString();
+      if (vis[loc] == 0) {
+        _data[loc][7] = max(_data[loc][0], st) - _data[loc][0];
+        _data[loc][4] = max(_data[loc][0], st) + _data[loc][1];
+        st = _data[loc][4];
+        _data[loc][0] = _data[loc][4] + _data[loc][2];
+      }
+      if (vis[loc] == 1) {
+        _data[loc][4] = max(_data[loc][0], st) + _data[loc][3];
+        st = _data[loc][4];
+        _data[loc][5] = _data[loc][4] - artime[loc];
+        _data[loc][6] = _data[loc][5] - _data[loc][1] - _data[loc][3];
+      }
+      for (int i = 0; i < 8; ++i) _datas[loc][i] = _data[loc][i].toString();
       int t = loc;
       _rowList[loc] = DataRow(cells: <DataCell>[
         DataCell(
             Text('P' + t.toString(), style: TextStyle(color: Colors.white))),
         DataCell(TextField(
+          //expands: true,
+          inputFormatters: [
+            LengthLimitingTextInputFormatter(2),
+          ],
           maxLines: 1,
           textAlign: TextAlign.center,
           keyboardType: TextInputType.number,
@@ -64,19 +79,51 @@ class _FCFSState extends State<FCFS> {
             });
           },
         )),
-        DataCell(Text(_datas[t][2], style: TextStyle(color: Colors.white))),
-        DataCell(Text(_datas[t][3], style: TextStyle(color: Colors.white))),
+        DataCell(TextField(
+          maxLines: 1,
+          //       inputFormatters:[
+          //   LengthLimitingTextInputFormatter(2),
+          // ],
+          textAlign: TextAlign.center,
+          keyboardType: TextInputType.number,
+          style: TextStyle(color: Colors.white),
+          onChanged: (val) {
+            setState(() {
+              _datas[t][2] = val;
+              _data[t][2] = int.parse(val);
+              _calculate();
+            });
+          },
+        )),
+        DataCell(TextField(
+          maxLines: 1,
+          textAlign: TextAlign.center,
+          keyboardType: TextInputType.number,
+          style: TextStyle(color: Colors.white),
+          onChanged: (val) {
+            setState(() {
+              _datas[t][3] = val;
+              _data[t][3] = int.parse(val);
+              _calculate();
+            });
+          },
+        )),
         DataCell(Text(_datas[t][4], style: TextStyle(color: Colors.white))),
+        DataCell(Text(_datas[t][5], style: TextStyle(color: Colors.white))),
+        DataCell(Text(_datas[t][6], style: TextStyle(color: Colors.white))),
+        DataCell(Text(_datas[t][7], style: TextStyle(color: Colors.white))),
       ]);
+      vis[loc]++;
     }
+    for (int i = 0; i < _counter; ++i) _data[i][0] = artime[i];
   }
 
   void _addrow() {
     setState(() {
       var t = _counter;
       _counter++;
-      _data.add([0, 0, 0, 0, 0]);
-      _datas.add(['0', '0', '0', '0', '0']);
+      _data.add([0, 0, 0, 0, 0, 0, 0, 0]);
+      _datas.add(['0', '0', '0', '0', '0', '0', '0', '0']);
       _rowList.add(DataRow(cells: <DataCell>[
         DataCell(Text('P' + (_counter - 1).toString(),
             style: TextStyle(color: Colors.white))),
@@ -106,9 +153,36 @@ class _FCFSState extends State<FCFS> {
             });
           },
         )),
-        DataCell(Text(_datas[t][2], style: TextStyle(color: Colors.white))),
-        DataCell(Text(_datas[t][3], style: TextStyle(color: Colors.white))),
+        DataCell(TextField(
+          maxLines: 1,
+          textAlign: TextAlign.center,
+          keyboardType: TextInputType.number,
+          style: TextStyle(color: Colors.white),
+          onChanged: (val) {
+            _datas[t][2] = val;
+            _data[t][2] = int.parse(val);
+            setState(() {
+              _calculate();
+            });
+          },
+        )),
+        DataCell(TextField(
+          maxLines: 1,
+          textAlign: TextAlign.center,
+          keyboardType: TextInputType.number,
+          style: TextStyle(color: Colors.white),
+          onChanged: (val) {
+            _datas[t][3] = val;
+            _data[t][3] = int.parse(val);
+            setState(() {
+              _calculate();
+            });
+          },
+        )),
         DataCell(Text(_datas[t][4], style: TextStyle(color: Colors.white))),
+        DataCell(Text(_datas[t][5], style: TextStyle(color: Colors.white))),
+        DataCell(Text(_datas[t][6], style: TextStyle(color: Colors.white))),
+        DataCell(Text(_datas[t][7], style: TextStyle(color: Colors.white))),
       ]));
     });
   }
@@ -146,13 +220,12 @@ class _FCFSState extends State<FCFS> {
               Padding(
                 child: Align(
                   child: Switch(
-                      value: false,
+                      value: true,
                       onChanged: (t) {
                         Navigator.pop(context);
-                        // Navigator.of(context).push(FCFSIOBT());
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => FCFSIOBT()),
+                          MaterialPageRoute(builder: (context) => FCFS()),
                         );
                       }),
                   alignment: Alignment.topRight,
@@ -179,6 +252,14 @@ class _FCFSState extends State<FCFS> {
                                 style: TextStyle(color: Colors.white)),
                             numeric: true),
                         DataColumn(
+                            label: Text('I/O BT',
+                                style: TextStyle(color: Colors.white)),
+                            numeric: true),
+                        DataColumn(
+                            label: Text('BT',
+                                style: TextStyle(color: Colors.white)),
+                            numeric: true),
+                        DataColumn(
                             label: Text('CT',
                                 style: TextStyle(color: Colors.white)),
                             numeric: true),
@@ -188,6 +269,10 @@ class _FCFSState extends State<FCFS> {
                             numeric: true),
                         DataColumn(
                             label: Text('WT',
+                                style: TextStyle(color: Colors.white)),
+                            numeric: true),
+                        DataColumn(
+                            label: Text('RT',
                                 style: TextStyle(color: Colors.white)),
                             numeric: true),
                       ],
