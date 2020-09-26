@@ -1,15 +1,16 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import './SJFIOBT.dart';
+import 'package:flutter/services.dart';
+import './SRTF.dart';
 
-//SJF page stateful class
-class SJF extends StatefulWidget {
+//FCFS page stateful class
+class SRTFIOBT extends StatefulWidget {
   @override
-  _SJFState createState() => _SJFState();
+  _SRTFIOBTState createState() => _SRTFIOBTState();
 }
 
-class _SJFState extends State<SJF> {
+class _SRTFIOBTState extends State<SRTFIOBT> {
   var _counter = 0;
 
   List<DataRow> _rowList = [];
@@ -18,14 +19,24 @@ class _SJFState extends State<SJF> {
 
   void _calculate() {
     int cal = 0, st = 0;
-    List<bool> vis;
-    vis = new List<bool>.filled(_counter, false);
-    while (cal != _counter) {
+    List<int> vis, artime, tbt, bt1, bt2;
+    vis = new List<int>.filled(_counter, 0);
+    artime = new List<int>.filled(_counter, 0);
+    tbt = new List<int>.filled(_counter, 0);
+    bt1 = new List<int>.filled(_counter, 0);
+    bt2 = new List<int>.filled(_counter, 0);
+    for (int i = 0; i < _counter; ++i) {
+      artime[i] = _data[i][0];
+      tbt[i] = _data[i][1] + _data[i][3];
+      bt1[i] = _data[i][1];
+      bt2[i] = _data[i][3];
+    }
+    while (cal != 2 * _counter) {
       var mn = 100, loc = 0;
       bool f = true;
       for (var i = 0; i < _counter; ++i) {
-        if (_data[i][1] < mn && !vis[i] && st >= _data[i][0]) {
-          mn = _data[i][1];
+        if (tbt[i] < mn && (vis[i] == 0 || vis[i] == 1) && st >= _data[i][0]) {
+          mn = tbt[i];
           loc = i;
           f = false;
         }
@@ -34,18 +45,42 @@ class _SJFState extends State<SJF> {
         st++;
         continue;
       }
-      vis[loc] = true;
-      cal++;
-      _data[loc][2] = st + _data[loc][1];
-      st = _data[loc][2];
-      _data[loc][3] = _data[loc][2] - _data[loc][0];
-      _data[loc][4] = _data[loc][3] - _data[loc][1];
-      for (int i = 0; i < 5; ++i) _datas[loc][i] = _data[loc][i].toString();
+      _data[loc][7] = min(_data[loc][7], st);
+      if (vis[loc] == 0) {
+        if (_data[loc][1] > 0) {
+          st++;
+          _data[loc][1]--;
+          tbt[loc]--;
+        }
+        if (_data[loc][1] == 0) {
+          _data[loc][0] = st + _data[loc][2];
+          vis[loc]++;
+          cal++;
+        }
+      } else {
+        if (_data[loc][3] > 0) {
+          st++;
+          _data[loc][3]--;
+          tbt[loc]--;
+        }
+        if (_data[loc][3] == 0) {
+          vis[loc]++;
+          cal++;
+          _data[loc][4] = st;
+          _data[loc][5] = _data[loc][4] - artime[loc];
+          _data[loc][6] = _data[loc][5] - bt1[loc] - bt2[loc];
+        }
+      }
+      for (int i = 0; i < 8; ++i) _datas[loc][i] = _data[loc][i].toString();
       int t = loc;
       _rowList[loc] = DataRow(cells: <DataCell>[
         DataCell(
             Text('P' + t.toString(), style: TextStyle(color: Colors.white))),
         DataCell(TextField(
+          //expands: true,
+          // inputFormatters: [
+          //   LengthLimitingTextInputFormatter(2),
+          // ],
           maxLines: 1,
           textAlign: TextAlign.center,
           keyboardType: TextInputType.number,
@@ -71,10 +106,45 @@ class _SJFState extends State<SJF> {
             });
           },
         )),
-        DataCell(Text(_datas[t][2], style: TextStyle(color: Colors.white))),
-        DataCell(Text(_datas[t][3], style: TextStyle(color: Colors.white))),
+        DataCell(TextField(
+          maxLines: 1,
+          //       inputFormatters:[
+          //   LengthLimitingTextInputFormatter(2),
+          // ],
+          textAlign: TextAlign.center,
+          keyboardType: TextInputType.number,
+          style: TextStyle(color: Colors.white),
+          onChanged: (val) {
+            setState(() {
+              _datas[t][2] = val;
+              _data[t][2] = int.parse(val);
+              _calculate();
+            });
+          },
+        )),
+        DataCell(TextField(
+          maxLines: 1,
+          textAlign: TextAlign.center,
+          keyboardType: TextInputType.number,
+          style: TextStyle(color: Colors.white),
+          onChanged: (val) {
+            setState(() {
+              _datas[t][3] = val;
+              _data[t][3] = int.parse(val);
+              _calculate();
+            });
+          },
+        )),
         DataCell(Text(_datas[t][4], style: TextStyle(color: Colors.white))),
+        DataCell(Text(_datas[t][5], style: TextStyle(color: Colors.white))),
+        DataCell(Text(_datas[t][6], style: TextStyle(color: Colors.white))),
+        DataCell(Text(_datas[t][7], style: TextStyle(color: Colors.white))),
       ]);
+    }
+    for (int i = 0; i < _counter; ++i) {
+      _data[i][0] = artime[i];
+      _data[i][1] = bt1[i];
+      _data[i][3] = bt2[i];
     }
   }
 
@@ -82,8 +152,8 @@ class _SJFState extends State<SJF> {
     setState(() {
       var t = _counter;
       _counter++;
-      _data.add([0, 0, 0, 0, 0]);
-      _datas.add(['0', '0', '0', '0', '0']);
+      _data.add([0, 0, 0, 0, 0, 0, 0, 0]);
+      _datas.add(['0', '0', '0', '0', '0', '0', '0', '0']);
       _rowList.add(DataRow(cells: <DataCell>[
         DataCell(Text('P' + (_counter - 1).toString(),
             style: TextStyle(color: Colors.white))),
@@ -113,9 +183,36 @@ class _SJFState extends State<SJF> {
             });
           },
         )),
-        DataCell(Text(_datas[t][2], style: TextStyle(color: Colors.white))),
-        DataCell(Text(_datas[t][3], style: TextStyle(color: Colors.white))),
+        DataCell(TextField(
+          maxLines: 1,
+          textAlign: TextAlign.center,
+          keyboardType: TextInputType.number,
+          style: TextStyle(color: Colors.white),
+          onChanged: (val) {
+            _datas[t][2] = val;
+            _data[t][2] = int.parse(val);
+            setState(() {
+              _calculate();
+            });
+          },
+        )),
+        DataCell(TextField(
+          maxLines: 1,
+          textAlign: TextAlign.center,
+          keyboardType: TextInputType.number,
+          style: TextStyle(color: Colors.white),
+          onChanged: (val) {
+            _datas[t][3] = val;
+            _data[t][3] = int.parse(val);
+            setState(() {
+              _calculate();
+            });
+          },
+        )),
         DataCell(Text(_datas[t][4], style: TextStyle(color: Colors.white))),
+        DataCell(Text(_datas[t][5], style: TextStyle(color: Colors.white))),
+        DataCell(Text(_datas[t][6], style: TextStyle(color: Colors.white))),
+        DataCell(Text(_datas[t][7], style: TextStyle(color: Colors.white))),
       ]));
     });
   }
@@ -140,7 +237,10 @@ class _SJFState extends State<SJF> {
     return Scaffold(
         backgroundColor: Colors.black,
         appBar: AppBar(
-          title: Text('SJF',style: TextStyle(fontFamily:'Pacifico'),),
+          title: Text(
+            'SRTF',
+            style: TextStyle(fontFamily: 'Pacifico'),
+          ),
           backgroundColor: Colors.red,
         ),
         body: Container(
@@ -150,13 +250,12 @@ class _SJFState extends State<SJF> {
               Padding(
                 child: Align(
                   child: Switch(
-                      value: false,
+                      value: true,
                       onChanged: (t) {
                         Navigator.pop(context);
-                        // Navigator.of(context).push(FCFSIOBT());
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => SJFIOBT()),
+                          MaterialPageRoute(builder: (context) => SRTF()),
                         );
                       }),
                   alignment: Alignment.topRight,
@@ -183,6 +282,14 @@ class _SJFState extends State<SJF> {
                                 style: TextStyle(color: Colors.white)),
                             numeric: true),
                         DataColumn(
+                            label: Text('I/O BT',
+                                style: TextStyle(color: Colors.white)),
+                            numeric: true),
+                        DataColumn(
+                            label: Text('BT',
+                                style: TextStyle(color: Colors.white)),
+                            numeric: true),
+                        DataColumn(
                             label: Text('CT',
                                 style: TextStyle(color: Colors.white)),
                             numeric: true),
@@ -192,6 +299,10 @@ class _SJFState extends State<SJF> {
                             numeric: true),
                         DataColumn(
                             label: Text('WT',
+                                style: TextStyle(color: Colors.white)),
+                            numeric: true),
+                        DataColumn(
+                            label: Text('RT',
                                 style: TextStyle(color: Colors.white)),
                             numeric: true),
                       ],

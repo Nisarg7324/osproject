@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import './LJFIOBT.dart';
 
 //LJF page stateful class
 class LJF extends StatefulWidget {
@@ -139,13 +140,32 @@ class _LJFState extends State<LJF> {
     return Scaffold(
         backgroundColor: Colors.black,
         appBar: AppBar(
-          title: Text('LJF',style: TextStyle(fontFamily:'Pacifico'),),
+          title: Text(
+            'LJF',
+            style: TextStyle(fontFamily: 'Pacifico'),
+          ),
           backgroundColor: Colors.red,
         ),
         body: Container(
           width: double.infinity,
           child: Column(
             children: <Widget>[
+              Padding(
+                child: Align(
+                  child: Switch(
+                      value: false,
+                      onChanged: (t) {
+                        Navigator.pop(context);
+                        // Navigator.of(context).push(FCFSIOBT());
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => LJFIOBT()),
+                        );
+                      }),
+                  alignment: Alignment.topRight,
+                ),
+                padding: EdgeInsets.only(right: 30),
+              ),
               Container(
                 child: SingleChildScrollView(
                   scrollDirection: Axis.vertical,

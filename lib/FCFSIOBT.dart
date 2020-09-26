@@ -51,9 +51,9 @@ class _FCFSIOBTState extends State<FCFSIOBT> {
             Text('P' + t.toString(), style: TextStyle(color: Colors.white))),
         DataCell(TextField(
           //expands: true,
-          inputFormatters: [
-            LengthLimitingTextInputFormatter(2),
-          ],
+          // inputFormatters: [
+          //   LengthLimitingTextInputFormatter(2),
+          // ],
           maxLines: 1,
           textAlign: TextAlign.center,
           keyboardType: TextInputType.number,

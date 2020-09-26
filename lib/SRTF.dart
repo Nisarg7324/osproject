@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import './SRTFIOBT.dart';
 
 //SRTF page stateful class
 class SRTF extends StatefulWidget {
@@ -148,13 +149,32 @@ class _SRTFState extends State<SRTF> {
     return Scaffold(
         backgroundColor: Colors.black,
         appBar: AppBar(
-          title: Text('SRTF',style: TextStyle(fontFamily:'Pacifico'),),
+          title: Text(
+            'SRTF',
+            style: TextStyle(fontFamily: 'Pacifico'),
+          ),
           backgroundColor: Colors.red,
         ),
         body: Container(
           width: double.infinity,
           child: Column(
             children: <Widget>[
+              Padding(
+                child: Align(
+                  child: Switch(
+                      value: false,
+                      onChanged: (t) {
+                        Navigator.pop(context);
+                        // Navigator.of(context).push(FCFSIOBT());
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => SRTFIOBT()),
+                        );
+                      }),
+                  alignment: Alignment.topRight,
+                ),
+                padding: EdgeInsets.only(right: 30),
+              ),
               Container(
                 child: SingleChildScrollView(
                   scrollDirection: Axis.vertical,

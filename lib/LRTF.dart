@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import './LRTFIOBT.dart';
 
 //LRTF page stateful class
 class LRTF extends StatefulWidget {
@@ -153,6 +154,22 @@ class _LRTFState extends State<LRTF> {
           width: double.infinity,
           child: Column(
             children: <Widget>[
+              Padding(
+                child: Align(
+                  child: Switch(
+                      value: false,
+                      onChanged: (t) {
+                        Navigator.pop(context);
+                        // Navigator.of(context).push(FCFSIOBT());
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => LRTFIOBT()),
+                        );
+                      }),
+                  alignment: Alignment.topRight,
+                ),
+                padding: EdgeInsets.only(right: 30),
+              ),
               Container(
                 child: SingleChildScrollView(
                   scrollDirection: Axis.vertical,
