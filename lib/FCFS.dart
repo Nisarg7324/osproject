@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:unknown/ffccffss.dart';
 import './FCFSIOBT.dart';
+import './ffccffss.dart';
 
 //FCFS page stateful class
 class FCFS extends StatefulWidget {
@@ -14,6 +16,8 @@ class _FCFSState extends State<FCFS> {
   List<DataRow> _rowList = [];
   List<List<int>> _data = [];
   List<List<String>> _datas = [];
+  List<List<int>> _cardv = [];
+  List<List<String>> _cardvs = [];
 
   void _calculate() {
     int cal = 0, st = 0;
@@ -29,11 +33,17 @@ class _FCFSState extends State<FCFS> {
       }
       vis[loc] = true;
       cal++;
+      _cardv[loc][0]=max(_data[loc][0], st);
       _data[loc][2] = max(_data[loc][0], st) + _data[loc][1];
       st = _data[loc][2];
+      _cardv[loc][1]= _data[loc][2];
+      //print(_cardv[loc][1]);
       _data[loc][3] = _data[loc][2] - _data[loc][0];
       _data[loc][4] = _data[loc][3] - _data[loc][1];
       for (int i = 0; i < 5; ++i) _datas[loc][i] = _data[loc][i].toString();
+      _cardvs[loc][0]=_cardv[loc][0].toString();
+      _cardvs[loc][1]=_cardv[loc][1].toString();
+      //print(_cardvs[loc][1]);
       int t = loc;
       _rowList[loc] = DataRow(cells: <DataCell>[
         DataCell(
@@ -76,7 +86,9 @@ class _FCFSState extends State<FCFS> {
       var t = _counter;
       _counter++;
       _data.add([0, 0, 0, 0, 0]);
+      _cardv.add([0, 0]);
       _datas.add(['0', '0', '0', '0', '0']);
+      _cardvs.add(['0', '0']);
       _rowList.add(DataRow(cells: <DataCell>[
         DataCell(Text('P' + (_counter - 1).toString(),
             style: TextStyle(color: Colors.white))),
@@ -226,7 +238,13 @@ class _FCFSState extends State<FCFS> {
                         'Run',
                         style: TextStyle(color: Colors.white),
                       ),
-                      onPressed: null,
+                      onPressed: (){
+                        
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => FCFSCAR(_cardvs),
+                        ));
+
+                      }
                     )),
                   ),
                   Align(
