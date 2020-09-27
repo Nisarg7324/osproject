@@ -105,7 +105,7 @@ class Vcard extends StatelessWidget{
                         padding: EdgeInsets.all(4),
                         child: Container(
                           //height: 100,
-                          child: Text('Process:' + (index+1).toString() ,
+                          child: Text('Process:' + lls[index][0] ,
                             style: TextStyle(
                               fontSize: 20,
                             ),
@@ -120,7 +120,7 @@ class Vcard extends StatelessWidget{
                         padding: EdgeInsets.all(4),
                         child: Container(
                           //height: 50,
-                          child: Text('Start Time: ' + lls[index][0],
+                          child: Text('Start Time: ' + lls[index][1],
                             style: TextStyle(
                               fontSize: 20,
                             ),
@@ -135,7 +135,7 @@ class Vcard extends StatelessWidget{
                         padding: EdgeInsets.all(4),
                         child: Container(
                           //height: 50,
-                          child: Text('End Time: ' + lls[index][1],
+                          child: Text('End Time: ' + lls[index][2],
                             style: TextStyle(
                               fontSize: 20,
                             ),
