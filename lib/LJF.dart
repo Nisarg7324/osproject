@@ -148,8 +148,15 @@ class _LJFState extends State<LJF> {
         ),
         body: Container(
           width: double.infinity,
-          child: Column(
+          child: ListView(
             children: <Widget>[
+              Padding(
+                child: Align(
+                  child: Text('I/O Device',style: TextStyle(color: Colors.white ,fontSize: 20),),
+                  alignment: Alignment.topRight,
+                ),
+                padding: EdgeInsets.only(right: 30),
+              ),
               Padding(
                 child: Align(
                   child: Switch(
@@ -253,6 +260,7 @@ class _LJFState extends State<LJF> {
                   )
                 ],
               ),
+              Container(height:700),
             ],
           ),
         ));
