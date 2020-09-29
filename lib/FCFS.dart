@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import './FCFSIOBT.dart';
+import './Card.dart';
 
 //FCFS page stateful class
 class FCFS extends StatefulWidget {
@@ -14,6 +15,43 @@ class _FCFSState extends State<FCFS> {
   List<DataRow> _rowList = [];
   List<List<int>> _data = [];
   List<List<String>> _datas = [];
+  List<List<int>> _cardv = [];
+  List<List<String>> _cardvs = [];
+
+  void _run(){
+    int cal = 0, st = 0,_tt=0;
+    List<bool> vis;
+    vis = new List<bool>.filled(_counter, false);
+    while (cal != _counter) {
+      var mn = 100, loc = 0;
+      for (var i = 0; i < _counter; ++i) {
+        if (_data[i][0] < mn && !vis[i]) {
+          mn = _data[i][0];
+          loc = i;
+        }
+      }
+      vis[loc] = true;
+      cal++;
+      _cardv[_tt][0]=loc;
+      _cardv[_tt][1]=max(_data[loc][0], st);
+      _data[loc][2] = max(_data[loc][0], st) + _data[loc][1];
+      //_cardv.add([max(_data[loc][0], st),_data[loc][2]]);
+      st = _data[loc][2];
+      _cardv[_tt][2]= _data[loc][2];
+      _cardv[_tt][3]=1;
+      //print(max(_data[loc][0], st));
+      //print(_data[loc][2]);
+      //print(_cardv[loc][1]);
+      _data[loc][3] = _data[loc][2] - _data[loc][0];
+      _data[loc][4] = _data[loc][3] - _data[loc][1];
+      for (int i = 0; i < 5; ++i) _datas[loc][i] = _data[loc][i].toString();
+      for (int i = 0; i < 4; ++i) _cardvs[_tt][i]=_cardv[_tt][i].toString();
+      //print(_cardvs[loc][1]);
+      _tt++;
+    }
+    print(_tt);
+    print(_cardvs);
+  }
 
   void _calculate() {
     int cal = 0, st = 0;
@@ -76,7 +114,9 @@ class _FCFSState extends State<FCFS> {
       var t = _counter;
       _counter++;
       _data.add([0, 0, 0, 0, 0]);
+      _cardv.add([0,0,0,0]);
       _datas.add(['0', '0', '0', '0', '0']);
+      _cardvs.add(['0','0', '0','0']);
       _rowList.add(DataRow(cells: <DataCell>[
         DataCell(Text('P' + (_counter - 1).toString(),
             style: TextStyle(color: Colors.white))),
@@ -233,7 +273,13 @@ class _FCFSState extends State<FCFS> {
                         'Run',
                         style: TextStyle(color: Colors.white),
                       ),
-                      onPressed: null,
+                        onPressed: (){
+                          _run();
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => CARD(_cardvs),
+                          ));
+
+                        },
                     )),
                   ),
                   Align(
