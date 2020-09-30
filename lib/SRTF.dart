@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import './SRTFIOBT.dart';
+import './Card.dart';
 
 //SRTF page stateful class
 class SRTF extends StatefulWidget {
@@ -15,9 +16,68 @@ class _SRTFState extends State<SRTF> {
   List<DataRow> _rowList = [];
   List<List<int>> _data = [];
   List<List<String>> _datas = [];
+  List<List<int>> _cardv = [];
+  List<List<String>> _cardvs = [];
+
+  void _run(){
+    _cardv.add([0,0,0,0]);
+    _cardvs.add(['0','0', '0','0']);
+    int cal = 0, st = 0,_t=0;
+    List<bool> vis;
+    List<int> val;
+    vis = new List<bool>.filled(_counter, false);
+    val = new List<int>.filled(_counter, 0);
+    for (int i = 0; i < _counter; ++i) val[i] = _data[i][1];
+    while (cal != _counter) {
+      var mn = 100,
+          loc = 0;
+      bool f = true;
+      for (var i = 0; i < _counter; ++i) {
+        if (_data[i][1] < mn && !vis[i] && st >= _data[i][0]) {
+          mn = _data[i][1];
+          loc = i;
+          f = false;
+        }
+      }
+      if (f) {
+        st++;
+        continue;
+      }
+      if (_data[loc][1] > 0) {
+        if(_t==0 && _cardv[_t][0]==0 && _cardv[_t][1]==0 && _cardv[_t][2]==0){
+            _cardv[_t][0]=loc;
+            _cardv[_t][1]=st;
+            _cardv[_t][2]=st+1;
+          }
+        else if(_cardv[_t][0]==loc){
+          _cardv[_t][2]++;
+        }
+        else{
+          _t++;
+          _cardv.add([0,0,0,0]);
+          _cardvs.add(['0','0', '0','0']);
+          _cardv[_t][0]=loc;
+          _cardv[_t][1]=st;
+          _cardv[_t][2]=st+1;
+        }
+        st++;
+        _data[loc][1]--;
+      }
+      if (_data[loc][1] == 0) {
+        vis[loc] = true;
+        _cardv[_t][3]=1;
+        cal++;
+      }
+      _data[loc][2] = st;
+      _data[loc][3] = _data[loc][2] - _data[loc][0];
+      _data[loc][4] = _data[loc][3] - val[loc];
+      for (int i = 0; i < 5; ++i) _datas[loc][i] = _data[loc][i].toString();
+      for (int i = 0; i < 4; ++i) _cardvs[_t][i] = _cardv[_t][i].toString();
+    }
+    }
 
   void _calculate() {
-    int cal = 0, st = 0;
+    int cal = 0, st = 0,_t=0;
     List<bool> vis;
     List<int> val;
     vis = new List<bool>.filled(_counter, false);
@@ -40,6 +100,7 @@ class _SRTFState extends State<SRTF> {
       if (_data[loc][1] > 0) {
         st++;
         _data[loc][1]--;
+
       }
       if (_data[loc][1] == 0) {
         vis[loc] = true;
@@ -92,7 +153,9 @@ class _SRTFState extends State<SRTF> {
       var t = _counter;
       _counter++;
       _data.add([0, 0, 0, 0, 0]);
+
       _datas.add(['0', '0', '0', '0', '0']);
+
       _rowList.add(DataRow(cells: <DataCell>[
         DataCell(Text('P' + (_counter - 1).toString(),
             style: TextStyle(color: Colors.white))),
@@ -249,7 +312,13 @@ class _SRTFState extends State<SRTF> {
                         'Run',
                         style: TextStyle(color: Colors.white),
                       ),
-                      onPressed: null,
+                      onPressed: (){
+                        _run();
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => CARD(_cardvs),
+                        ));
+
+                      },
                     )),
                   ),
                   Align(
