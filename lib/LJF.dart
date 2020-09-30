@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import './LJFIOBT.dart';
+import './Card.dart';
 
 //LJF page stateful class
 class LJF extends StatefulWidget {
@@ -15,6 +16,43 @@ class _LJFState extends State<LJF> {
   List<DataRow> _rowList = [];
   List<List<int>> _data = [];
   List<List<String>> _datas = [];
+  List<List<int>> _cardv = [];
+  List<List<String>> _cardvs = [];
+
+  void _run(){
+    int cal = 0, st = 0,_tt=0;
+    List<bool> vis;
+    vis = new List<bool>.filled(_counter, false);
+    while (cal != _counter) {
+      var mx = -1,
+          loc = 0;
+      bool f = true;
+      for (var i = 0; i < _counter; ++i) {
+        if (_data[i][1] > mx && !vis[i] && st >= _data[i][0]) {
+          mx = _data[i][1];
+          loc = i;
+          f = false;
+        }
+      }
+      if (f) {
+        st++;
+        continue;
+      }
+      vis[loc] = true;
+      cal++;
+      _cardv[_tt][0]=loc;
+      _cardv[_tt][1]=st;
+      _data[loc][2] = st + _data[loc][1];
+      st = _data[loc][2];
+      _cardv[_tt][2]=st;
+      _cardv[_tt][3]=1;
+      _data[loc][3] = _data[loc][2] - _data[loc][0];
+      _data[loc][4] = _data[loc][3] - _data[loc][1];
+      for (int i = 0; i < 5; ++i) _datas[loc][i] = _data[loc][i].toString();
+      for (int i = 0; i < 4; ++i) _cardvs[_tt][i]=_cardv[_tt][i].toString();
+      _tt++;
+    }
+  }
 
   void _calculate() {
     int cal = 0, st = 0;
@@ -83,7 +121,9 @@ class _LJFState extends State<LJF> {
       var t = _counter;
       _counter++;
       _data.add([0, 0, 0, 0, 0]);
+      _cardv.add([0,0,0,0]);
       _datas.add(['0', '0', '0', '0', '0']);
+      _cardvs.add(['0','0', '0','0']);
       _rowList.add(DataRow(cells: <DataCell>[
         DataCell(Text('P' + (_counter - 1).toString(),
             style: TextStyle(color: Colors.white))),
@@ -240,7 +280,13 @@ class _LJFState extends State<LJF> {
                         'Run',
                         style: TextStyle(color: Colors.white),
                       ),
-                      onPressed: null,
+                      onPressed: (){
+                        _run();
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => CARD(_cardvs),
+                        ));
+
+                      },
                     )),
                   ),
                   Align(

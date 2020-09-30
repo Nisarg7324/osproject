@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import './LRTFIOBT.dart';
+import './Card.dart';
 
 //LRTF page stateful class
 class LRTF extends StatefulWidget {
@@ -13,6 +14,65 @@ class _LRTFState extends State<LRTF> {
   List<DataRow> _rowList = [];
   List<List<int>> _data = [];
   List<List<String>> _datas = [];
+  List<List<int>> _cardv = [];
+  List<List<String>> _cardvs = [];
+
+  void _run(){
+    int cal = 0, st = 0,_tt=0;
+    _cardv.add([0,0,0,0]);
+    _cardvs.add(['0','0', '0','0']);
+    List<bool> vis;
+    List<int> val;
+    vis = new List<bool>.filled(_counter, false);
+    val = new List<int>.filled(_counter, 0);
+    for (int i = 0; i < _counter; ++i) val[i] = _data[i][1];
+    while (cal != _counter) {
+      var mx = -1,
+          loc = 0;
+      bool f = true;
+      for (var i = 0; i < _counter; ++i) {
+        if (_data[i][1] > mx && !vis[i] && st >= _data[i][0]) {
+          mx = _data[i][1];
+          loc = i;
+          f = false;
+        }
+      }
+      if (f) {
+        st++;
+        continue;
+      }
+      if (_data[loc][1] > 0) {
+        if(_tt==0 && _cardv[_tt][0]==0 && _cardv[_tt][1]==0 && _cardv[_tt][2]==0){
+          _cardv[_tt][0]=loc;
+          _cardv[_tt][1]=st;
+          _cardv[_tt][2]=st+1;
+        }
+        else if(_cardv[_tt][0]==loc){
+          _cardv[_tt][2]++;
+        }
+        else{
+          _tt++;
+          _cardv.add([0,0,0,0]);
+          _cardvs.add(['0','0', '0','0']);
+          _cardv[_tt][0]=loc;
+          _cardv[_tt][1]=st;
+          _cardv[_tt][2]=st+1;
+        }
+        st++;
+        _data[loc][1]--;
+      }
+      if (_data[loc][1] == 0) {
+        vis[loc] = true;
+        _cardv[_tt][3]=1;
+        cal++;
+      }
+      _data[loc][2] = st;
+      _data[loc][3] = _data[loc][2] - _data[loc][0];
+      _data[loc][4] = _data[loc][3] - val[loc];
+      for (int i = 0; i < 5; ++i) _datas[loc][i] = _data[loc][i].toString();
+      for (int i = 0; i < 4; ++i) _cardvs[_tt][i] = _cardv[_tt][i].toString();
+    }
+  }
 
   void _calculate() {
     int cal = 0, st = 0;
@@ -244,7 +304,13 @@ class _LRTFState extends State<LRTF> {
                         'Run',
                         style: TextStyle(color: Colors.white),
                       ),
-                      onPressed: null,
+                      onPressed: (){
+                        _run();
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => CARD(_cardvs),
+                        ));
+
+                      },
                     )),
                   ),
                   Align(
@@ -260,13 +326,15 @@ class _LRTFState extends State<LRTF> {
                         style: TextStyle(color: Colors.white),
                       ),
                       onPressed: _RemoveRow,
-                    )),
+                    )
+                    ),
                   )
                 ],
               ),
               Container(height:700),
             ],
           ),
-        ));
+        )
+    );
   }
 }
