@@ -16,7 +16,6 @@ class _RRState extends State<RR> {
   List<List<String>> _datas = [];
 
   void _calculate() {
-    print('Print');
     int st = 0;
     List<int> RQ = [], bt, at;
     bt = new List<int>.filled(_counter, 0);
