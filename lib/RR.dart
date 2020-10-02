@@ -16,41 +16,93 @@ class _RRState extends State<RR> {
   List<List<String>> _datas = [];
 
   void _calculate() {
-    int cal = 0, st = 0;
-    List<bool> vis;
-    vis = new List<bool>.filled(_counter, false);
-    List<int> RQ=[], bt, at;
-    bt=new List<int>.filled(_counter, 0);
-    at=new List<int>.filled(_counter, 0);
+    print('Print');
+    int st = 0;
+    List<int> RQ = [], bt, at;
+    bt = new List<int>.filled(_counter, 0);
+    at = new List<int>.filled(_counter, 0);
     for (int i = 0; i < _counter; ++i) {
-      bt[i]=_data[i][1];
-      at[i]=_data[i][0];
+      bt[i] = _data[i][1];
+      at[i] = _data[i][0];
     }
+    int mn = 100;
+    for (int i = 0; i < _counter; ++i) {
+      if (mn > _data[i][0] && _data[i][1] > 0) {
+        mn = _data[i][0];
+      }
+    }
+    if (mn==100) return;
+    for(int i=0;i<_counter;++i)
+    {
+      if(_data[i][0]==mn)
+      RQ.add(i);
+    }
+    int it = 0, et = 0;
     while (true) {
-      bool f = true;
+      bool flag = true;
       for (int i = 0; i < _counter; ++i) {
-        if (_data[i][1] > 0) {
-          f = false;
-          if (st == _data[i][0]) {
-            //print(st);
-            RQ.add(i);
-            _data[i][0] += TQ;
-            _data[i][1] -= TQ;
+        if (_data[i][1] > 0) flag = false;
+      }
+      if (flag) break;
+      if (it < RQ.length && _data[RQ[it]][1] <= 0) {
+        it++;
+        continue;
+      }
+      if (it < RQ.length) {
+        if (_data[RQ[it]][1] >= TQ) {
+          _data[RQ[it]][1] -= TQ;
+          _data[RQ[it]][0] += TQ;
+          for (int i = et + 1; i <= et + TQ; i++) {
+            for (int j = 0; j < _counter; ++j) {
+              if (_data[j][1] > 0 && _data[j][0] == i && RQ[it] != j) {
+                RQ.add(j);
+              }
+            }
+          }
+          et += TQ;
+          if (_data[RQ[it]][1] > 0) RQ.add(RQ[it]);
+          it++;
+        }
+        else {
+          int temp = min(_data[RQ[it]][1], TQ);
+          _data[RQ[it]][1] -= temp;
+          _data[RQ[it]][0] += temp;
+          for (int i = et + 1; i <= et + temp; i++) {
+            for (int j = 0; j < _counter; ++j) {
+              if (_data[j][1] > 0 && _data[j][0] == i && RQ[it] != j) {
+                RQ.add(j);
+              }
+            }
+          }
+          et += temp;
+          if (_data[RQ[it]][1] > 0) RQ.add(RQ[it]);
+          it++;
+        }
+      } else {
+        mn = 100;
+        for (int i = 0; i < _counter; ++i) {
+          if (mn > _data[i][0] && _data[i][1] > 0) {
+            mn = _data[i][0];
           }
         }
+        for(int i=0;i<_counter;++i)
+        {
+          if(mn==_data[i][0])
+          RQ.add(i);
+        }
       }
-      st++;
-      if (f) break;
     }
     for (int i = 0; i < _counter; ++i) {
-      _data[i][1] = bt[i];
-      _data[i][0] = at[i];
+      int pp = bt[i];
+      _data[i][1] = pp;
+      pp = at[i];
+      _data[i][0] = pp;
     }
     st = 0;
     for (int i in RQ) {
-      print(i);
+      if (_data[i][1] <= 0) continue;
       if (_data[i][1] <= TQ) {
-        st += min(TQ, _data[i][1]);
+        st = max(st, _data[i][0]) + min(TQ, _data[i][1]);
         _data[i][1] -= TQ;
         _data[i][2] = st;
         _data[i][3] = _data[i][2] - at[i];
@@ -71,9 +123,6 @@ class _RRState extends State<RR> {
         DataCell(
             Text('P' + t.toString(), style: TextStyle(color: Colors.white))),
         DataCell(TextField(
-          decoration: const InputDecoration(
-            contentPadding : const EdgeInsets.symmetric(horizontal : 10.0)
-          ),
           maxLines: 1,
           textAlign: TextAlign.center,
           keyboardType: TextInputType.number,
@@ -116,9 +165,6 @@ class _RRState extends State<RR> {
         DataCell(Text('P' + (_counter - 1).toString(),
             style: TextStyle(color: Colors.white))),
         DataCell(TextField(
-          decoration: const InputDecoration(
-            contentPadding : const EdgeInsets.symmetric(horizontal : 10.0)
-          ),
           maxLines: 1,
           textAlign: TextAlign.center,
           keyboardType: TextInputType.number,
@@ -161,12 +207,12 @@ class _RRState extends State<RR> {
     });
   }
 
-  var f = true;
+  var fo = true;
   @override
   Widget build(BuildContext context) {
-    if (f) {
+    if (fo) {
       _addrow();
-      f = false;
+      fo = false;
     }
     return Scaffold(
         backgroundColor: Colors.black,
@@ -183,7 +229,10 @@ class _RRState extends State<RR> {
             children: <Widget>[
               Padding(
                 child: Align(
-                  child: Text('I/O Device',style: TextStyle(color: Colors.white ,fontSize: 20),),
+                  child: Text(
+                    'I/O Device',
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
                   alignment: Alignment.topRight,
                 ),
                 padding: EdgeInsets.only(right: 30),
@@ -303,7 +352,7 @@ class _RRState extends State<RR> {
                   )
                 ],
               ),
-              Container(height:700),
+              Container(height: 700),
             ],
           ),
         ));
