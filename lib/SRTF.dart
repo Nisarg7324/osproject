@@ -20,6 +20,8 @@ class _SRTFState extends State<SRTF> {
   List<List<String>> _cardvs = [];
 
   void _run(){
+    _cardv.clear();
+    _cardvs.clear();
     _cardv.add([0,0,0,0]);
     _cardvs.add(['0','0', '0','0']);
     int cal = 0, st = 0,_t=0;

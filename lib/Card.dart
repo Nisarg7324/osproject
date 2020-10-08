@@ -34,13 +34,15 @@ class CARDstate extends State{
         ),
       ),
       body: Container(
-        child: Column(
-          children: <Widget>[
-            for(var i=0;i<ls.length;i++) Vcard(i,ls)
-            //Vcard(0,ls),
-            //Vcard(1,ls),
-          ],
-        ),
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              for(var i=0;i<ls.length;i++) Vcard(i,ls)
+              //Vcard(0,ls),
+              //Vcard(1,ls),
+            ],
+          ),
+        )
       ),
     );
   }
@@ -63,7 +65,7 @@ class Vcard extends StatelessWidget{
             padding: EdgeInsets.all(4),
             child: Container(
               //height: 100,
-              child: Text('Process ' + (index+1).toString() + ' Is Finished',
+              child: Text('Process ' + lls[index][0] + ' Is Finished',
                 style: TextStyle(
                   fontSize: 20,
                   color: Colors.green
@@ -82,7 +84,7 @@ class Vcard extends StatelessWidget{
             padding: EdgeInsets.all(4),
             child: Container(
               //height: 100,
-              child: Text('Process ' + (index+1).toString() + ' Will go for IO Burst Time',
+              child: Text('Process ' + lls[index][0] + ' Will go for IO Burst ',
                 style: TextStyle(
                     fontSize: 20,
                     color: Colors.green
@@ -111,7 +113,7 @@ class Vcard extends StatelessWidget{
       child: Card(
         elevation: 5,
         child: Container(
-          height: 150,
+          height: 180,
 
           child: Padding(
               padding: EdgeInsets.all(10),
@@ -162,7 +164,37 @@ class Vcard extends StatelessWidget{
                       ),
                     ],
                   ),
-                  isCompleted(),
+                  Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.all(4),
+                        child: Container(
+                          //height: 50,
+                          child: Text('Ready Queue: P1 P2 P3 P4 P5 P6 P7 P8',
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.all(4),
+                        child: Container(
+                          //height: 50,
+                          child: Text('Finished Queue: P1 P2 P3 P4 P5 P6 P7 P8',
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  //isCompleted(),
 
 
                 ],
@@ -170,6 +202,8 @@ class Vcard extends StatelessWidget{
           ),
 
         ),
+        color: lls[index][3]=='1' ? Colors.green: lls[index][3]=='2'? Colors.grey : Colors.red,
+        //lls[index][3]==2? Colors.grey:
       ),
     );
   }

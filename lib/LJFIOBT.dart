@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import './LJF.dart';
+import './Card.dart';
 
 //FCFS page stateful class
 class LJFIOBT extends StatefulWidget {
@@ -16,6 +17,70 @@ class _LJFIOBTState extends State<LJFIOBT> {
   List<DataRow> _rowList = [];
   List<List<int>> _data = [];
   List<List<String>> _datas = [];
+  List<List<int>> _cardv = [];
+  List<List<String>> _cardvs = [];
+
+  void _run(){
+    _cardv.clear();
+    _cardvs.clear();
+    int cal = 0, st = 0,_tt=-1;
+    List<int> vis, artime, tbt;
+    vis = new List<int>.filled(_counter, 0);
+    artime = new List<int>.filled(_counter, 0);
+    tbt = new List<int>.filled(_counter, 0);
+    for (int i = 0; i < _counter; ++i) {
+      artime[i] = _data[i][0];
+      tbt[i] = _data[i][1] + _data[i][3];
+    }
+    while (cal != 2 * _counter) {
+      var mx = -1,
+          loc = 0;
+      bool f = true;
+      for (var i = 0; i < _counter; ++i) {
+        if (tbt[i] > mx && (vis[i] == 0 || vis[i] == 1) && st >= _data[i][0]) {
+          mx = tbt[i];
+          loc = i;
+          f = false;
+        }
+      }
+      if (f) {
+        st++;
+        continue;
+      }
+      cal++;
+      if (vis[loc] == 0) {
+        _tt++;
+        _cardv.add([0, 0, 0, 0]);
+        _cardvs.add(['0', '0', '0', '0']);
+        _cardv[_tt][0]=loc;
+        _cardv[_tt][1]=st;
+        _data[loc][7] = st - _data[loc][0];
+        _data[loc][4] = st + _data[loc][1];
+        st = _data[loc][4];
+        _cardv[_tt][2]=st;
+        _cardv[_tt][3]=2;
+        _data[loc][0] = _data[loc][4] + _data[loc][2];
+        tbt[loc] -= _data[loc][1];
+      }
+      if (vis[loc] == 1) {
+        _tt++;
+        _cardv.add([0, 0, 0, 0]);
+        _cardvs.add(['0', '0', '0', '0']);
+        _cardv[_tt][0]=loc;
+        _cardv[_tt][1]=st;
+        _data[loc][4] = st + _data[loc][3];
+        st = _data[loc][4];
+        _cardv[_tt][2]=st;
+        _cardv[_tt][3]=1;
+        _data[loc][5] = _data[loc][4] - artime[loc];
+        _data[loc][6] = _data[loc][5] - _data[loc][1] - _data[loc][3];
+      }
+      for (int i = 0; i < 8; ++i) _datas[loc][i] = _data[loc][i].toString();
+      for (int i = 0; i < 4; ++i) _cardvs[_tt][i] = _cardv[_tt][i].toString();
+      vis[loc]++;
+    }
+    for (int i = 0; i < _counter; ++i) _data[i][0] = artime[i];
+    }
 
   void _calculate() {
     int cal = 0, st = 0;
@@ -329,7 +394,13 @@ class _LJFIOBTState extends State<LJFIOBT> {
                         'Run',
                         style: TextStyle(color: Colors.white),
                       ),
-                      onPressed: null,
+                      onPressed: (){
+                        _run();
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => CARD(_cardvs),
+                        ));
+
+                      },
                     )),
                   ),
                   Align(

@@ -18,6 +18,8 @@ class _LRTFState extends State<LRTF> {
   List<List<String>> _cardvs = [];
 
   void _run(){
+    _cardv.clear();
+    _cardvs.clear();
     int cal = 0, st = 0,_tt=0;
     _cardv.add([0,0,0,0]);
     _cardvs.add(['0','0', '0','0']);
@@ -47,7 +49,7 @@ class _LRTFState extends State<LRTF> {
           _cardv[_tt][1]=st;
           _cardv[_tt][2]=st+1;
         }
-        else if(_cardv[_tt][0]==loc){
+        else if(_cardv[_tt][0]==loc ){
           _cardv[_tt][2]++;
         }
         else{

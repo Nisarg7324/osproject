@@ -20,6 +20,8 @@ class _LJFState extends State<LJF> {
   List<List<String>> _cardvs = [];
 
   void _run(){
+    _cardv.clear();
+    _cardvs.clear();
     int cal = 0, st = 0,_tt=0;
     List<bool> vis;
     vis = new List<bool>.filled(_counter, false);
@@ -38,6 +40,8 @@ class _LJFState extends State<LJF> {
         st++;
         continue;
       }
+      _cardv.add([0,0,0,0]);
+      _cardvs.add(['0','0', '0','0']);
       vis[loc] = true;
       cal++;
       _cardv[_tt][0]=loc;
@@ -121,9 +125,9 @@ class _LJFState extends State<LJF> {
       var t = _counter;
       _counter++;
       _data.add([0, 0, 0, 0, 0]);
-      _cardv.add([0,0,0,0]);
+
       _datas.add(['0', '0', '0', '0', '0']);
-      _cardvs.add(['0','0', '0','0']);
+
       _rowList.add(DataRow(cells: <DataCell>[
         DataCell(Text('P' + (_counter - 1).toString(),
             style: TextStyle(color: Colors.white))),

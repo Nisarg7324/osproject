@@ -21,6 +21,8 @@ class _SJFState extends State<SJF> {
 
   void _run(){
     int cal = 0, st = 0,_tt=0;
+    _cardv.clear();
+    _cardvs.clear();
     List<bool> vis;
     vis = new List<bool>.filled(_counter, false);
     while (cal != _counter) {
@@ -37,6 +39,8 @@ class _SJFState extends State<SJF> {
         st++;
         continue;
       }
+      _cardv.add([0,0,0,0]);
+      _cardvs.add(['0','0', '0','0']);
       vis[loc] = true;
       _cardv[_tt][0]=loc;
       _cardv[_tt][1]=st;
@@ -120,9 +124,9 @@ class _SJFState extends State<SJF> {
       var t = _counter;
       _counter++;
       _data.add([0, 0, 0, 0, 0]);
-      _cardv.add([0,0,0,0]);
+
       _datas.add(['0', '0', '0', '0', '0']);
-      _cardvs.add(['0','0', '0','0']);
+
       _rowList.add(DataRow(cells: <DataCell>[
         DataCell(Text('P' + (_counter - 1).toString(),
             style: TextStyle(color: Colors.white))),

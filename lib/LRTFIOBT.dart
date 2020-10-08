@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import './LRTF.dart';
+import './Card.dart';
 
 //FCFS page stateful class
 class LRTFIOBT extends StatefulWidget {
@@ -16,6 +17,157 @@ class _LRTFIOBTState extends State<LRTFIOBT> {
   List<DataRow> _rowList = [];
   List<List<int>> _data = [];
   List<List<String>> _datas = [];
+  List<List<int>> _cardv = [];
+  List<List<String>> _cardvs = [];
+
+  void _run(){
+    _cardv.clear();
+    _cardvs.clear();
+    _cardv.add([0, 0, 0, 0]);
+    _cardvs.add(['0', '0', '0', '0']);
+    int cal = 0, st = 0, _tt=0;
+    List<int> vis, artime, tbt, bt1, bt2;
+    vis = new List<int>.filled(_counter, 0);
+    artime = new List<int>.filled(_counter, 0);
+    tbt = new List<int>.filled(_counter, 0);
+    bt1 = new List<int>.filled(_counter, 0);
+    bt2 = new List<int>.filled(_counter, 0);
+    for (int i = 0; i < _counter; ++i) {
+      artime[i] = _data[i][0];
+      tbt[i] = _data[i][1] + _data[i][3];
+      bt1[i] = _data[i][1];
+      bt2[i] = _data[i][3];
+    }
+    while (cal != 2 * _counter) {
+      var mx = -1,
+          loc = 0;
+      bool f = true;
+      for (var i = 0; i < _counter; ++i) {
+        if (tbt[i] > mx && (vis[i] == 0 || vis[i] == 1) && st >= _data[i][0]) {
+          mx = tbt[i];
+          loc = i;
+          f = false;
+        }
+      }
+      if (f) {
+        st++;
+        continue;
+      }
+      //print(vis[loc]);
+      //print(_data[loc]);
+      //print('--');
+      _data[loc][7] = min(_data[loc][7], st);
+      //print(loc);
+      if (vis[loc] == 0) {
+        if (_data[loc][1] > 0) {
+          if(_tt==0 && _cardv[_tt][0]==0 && _cardv[_tt][1]==0 && _cardv[_tt][2]==0){
+            _cardv[_tt][0]=loc;
+            _cardv[_tt][1]=st;
+            _cardv[_tt][2]=st+1;
+          }
+          else if(_cardv[_tt][0]==loc && _cardv[_tt][2]==st){
+            _cardv[_tt][2]++;
+          }
+          else{
+            _tt++;
+            _cardv.add([0, 0, 0, 0]);
+            _cardvs.add(['0', '0', '0', '0']);
+            _cardv[_tt][0]=loc;
+            _cardv[_tt][1]=st;
+            _cardv[_tt][2]=st+1;
+          }
+          st++;
+          _data[loc][1]--;
+          tbt[loc]--;
+        }
+        if (_data[loc][1] == 0) {
+
+          if(_tt==0 && _cardv[_tt][0]==0 && _cardv[_tt][1]==0 && _cardv[_tt][2]==0){
+            _cardv[_tt][0]=loc;
+            _cardv[_tt][1]=st;
+            _cardv[_tt][2]=st;
+            _cardv[_tt][3]=2;
+          }
+          else if(_cardv[_tt][0]==loc){
+            //_cardv[_tt][2]++;
+            _cardv[_tt][3]=2;
+          }
+          else{
+            _tt++;
+            _cardv.add([0, 0, 0, 0]);
+            _cardvs.add(['0', '0', '0', '0']);
+            _cardv[_tt][0]=loc;
+            _cardv[_tt][1]=st;
+            _cardv[_tt][2]=st;
+            _cardv[_tt][3]=2;
+          }
+          _data[loc][0] = st + _data[loc][2];
+          vis[loc]++;
+          cal++;
+        }
+      }
+      else {
+        if (_data[loc][3] > 0) {
+
+          if(_tt==0 && _cardv[_tt][0]==0 && _cardv[_tt][1]==0 && _cardv[_tt][2]==0){
+            _cardv[_tt][0]=loc;
+            _cardv[_tt][1]=st;
+            _cardv[_tt][2]=st+1;
+          }
+          else if(_cardv[_tt][0]==loc && _cardv[_tt][2]==st){
+            //print(_cardv[_tt][2]);
+            //print(st);
+            _cardv[_tt][2]++;
+          }
+          else{
+            _tt++;
+            _cardv.add([0, 0, 0, 0]);
+            _cardvs.add(['0', '0', '0', '0']);
+            _cardv[_tt][0]=loc;
+            _cardv[_tt][1]=st;
+            _cardv[_tt][2]=st+1;
+          }
+          st++;
+          _data[loc][3]--;
+          tbt[loc]--;
+        }
+        if (_data[loc][3] == 0) {
+          if(_tt==0 && _cardv[_tt][0]==0 && _cardv[_tt][1]==0 && _cardv[_tt][2]==0){
+            _cardv[_tt][0]=loc;
+            _cardv[_tt][1]=st;
+            _cardv[_tt][2]=st;
+            _cardv[_tt][3]=1;
+          }
+          else if(_cardv[_tt][0]==loc){
+            //_cardv[_tt][2]++;
+            _cardv[_tt][3]=1;
+          }
+          else{
+            _tt++;
+            _cardv.add([0, 0, 0, 0]);
+            _cardvs.add(['0', '0', '0', '0']);
+            _cardv[_tt][0]=loc;
+            _cardv[_tt][1]=st;
+            _cardv[_tt][2]=st;
+            _cardv[_tt][3]=1;
+          }
+          vis[loc]++;
+          cal++;
+          _data[loc][4] = st;
+          _data[loc][5] = _data[loc][4] - artime[loc];
+          _data[loc][6] = _data[loc][5] - bt1[loc] - bt2[loc];
+        }
+      }
+      for (int i = 0; i < 8; ++i) _datas[loc][i] = _data[loc][i].toString();
+      for (int i = 0; i < 4; ++i) _cardvs[_tt][i] = _cardv[_tt][i].toString();
+    }
+
+    for (int i = 0; i < _counter; ++i) {
+      _data[i][0] = artime[i];
+      _data[i][1] = bt1[i];
+      _data[i][3] = bt2[i];
+    }
+  }
 
   void _calculate() {
     int cal = 0, st = 0;
@@ -45,6 +197,10 @@ class _LRTFIOBTState extends State<LRTFIOBT> {
         st++;
         continue;
       }
+      //print(loc);
+      //print(vis[loc]);
+      //print(_data[loc][1]);
+      //print('---');
       _data[loc][7] = min(_data[loc][7], st);
       if (vis[loc] == 0) {
         if (_data[loc][1] > 0) {
@@ -348,7 +504,13 @@ class _LRTFIOBTState extends State<LRTFIOBT> {
                         'Run',
                         style: TextStyle(color: Colors.white),
                       ),
-                      onPressed: null,
+                      onPressed: (){
+                        _run();
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => CARD(_cardvs),
+                        ));
+
+                      },
                     )),
                   ),
                   Align(

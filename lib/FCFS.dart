@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import './FCFSIOBT.dart';
 import './Card.dart';
@@ -19,6 +20,8 @@ class _FCFSState extends State<FCFS> {
   List<List<String>> _cardvs = [];
 
   void _run(){
+    _cardv.clear();
+    _cardvs.clear();
     int cal = 0, st = 0,_tt=0;
     List<bool> vis;
     vis = new List<bool>.filled(_counter, false);
@@ -30,27 +33,22 @@ class _FCFSState extends State<FCFS> {
           loc = i;
         }
       }
+      _cardv.add([0,0,0,0]);
+      _cardvs.add(['0','0', '0','0']);
       vis[loc] = true;
       cal++;
       _cardv[_tt][0]=loc;
       _cardv[_tt][1]=max(_data[loc][0], st);
       _data[loc][2] = max(_data[loc][0], st) + _data[loc][1];
-      //_cardv.add([max(_data[loc][0], st),_data[loc][2]]);
       st = _data[loc][2];
       _cardv[_tt][2]= _data[loc][2];
       _cardv[_tt][3]=1;
-      //print(max(_data[loc][0], st));
-      //print(_data[loc][2]);
-      //print(_cardv[loc][1]);
       _data[loc][3] = _data[loc][2] - _data[loc][0];
       _data[loc][4] = _data[loc][3] - _data[loc][1];
       for (int i = 0; i < 5; ++i) _datas[loc][i] = _data[loc][i].toString();
       for (int i = 0; i < 4; ++i) _cardvs[_tt][i]=_cardv[_tt][i].toString();
-      //print(_cardvs[loc][1]);
       _tt++;
     }
-    print(_tt);
-    print(_cardvs);
   }
 
   void _calculate() {
@@ -77,6 +75,7 @@ class _FCFSState extends State<FCFS> {
         DataCell(
             Text('P' + t.toString(), style: TextStyle(color: Colors.white))),
         DataCell(TextField(
+
           maxLines: 1,
           textAlign: TextAlign.center,
           keyboardType: TextInputType.number,
@@ -90,6 +89,7 @@ class _FCFSState extends State<FCFS> {
           },
         )),
         DataCell(TextField(
+
           maxLines: 1,
           textAlign: TextAlign.center,
           keyboardType: TextInputType.number,
@@ -114,13 +114,14 @@ class _FCFSState extends State<FCFS> {
       var t = _counter;
       _counter++;
       _data.add([0, 0, 0, 0, 0]);
-      _cardv.add([0,0,0,0]);
+
       _datas.add(['0', '0', '0', '0', '0']);
-      _cardvs.add(['0','0', '0','0']);
+
       _rowList.add(DataRow(cells: <DataCell>[
         DataCell(Text('P' + (_counter - 1).toString(),
             style: TextStyle(color: Colors.white))),
         DataCell(TextField(
+
           maxLines: 1,
           textAlign: TextAlign.center,
           keyboardType: TextInputType.number,
@@ -134,6 +135,7 @@ class _FCFSState extends State<FCFS> {
           },
         )),
         DataCell(TextField(
+
           maxLines: 1,
           textAlign: TextAlign.center,
           keyboardType: TextInputType.number,
