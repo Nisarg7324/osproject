@@ -52,9 +52,15 @@ class CARDstate extends State{
 class Vcard extends StatelessWidget{
   var index;
   List lls;
+  String _rq;
+  String _tq;
   Vcard(int i, List ls){
     index=i;
     lls=ls;
+    _rq="";
+    _tq="";
+    for(var j=index+1;j<ls.length;++j) _rq+= ' P'+lls[j][0];
+    for(var j=0;j<index;++j) _tq+= ' P'+lls[j][0];
   }
 
   isCompleted(){
@@ -75,8 +81,7 @@ class Vcard extends StatelessWidget{
           ),
         ],
       );
-
-  }
+    }
     else if(lls[index][3]=='2'){
       return Row(
         children: <Widget>[
@@ -102,7 +107,7 @@ class Vcard extends StatelessWidget{
     }
   }
 
-
+  Color _textcolor=Colors.black;
 
 
 
@@ -113,13 +118,13 @@ class Vcard extends StatelessWidget{
       child: Card(
         elevation: 5,
         child: Container(
-          height: 180,
+          //height: 250,
 
           child: Padding(
               padding: EdgeInsets.all(10),
               child: Column(
                 children: <Widget>[
-                  Row(
+                  /*Row(
                     children: <Widget>[
                       Padding(
                         padding: EdgeInsets.all(4),
@@ -163,34 +168,90 @@ class Vcard extends StatelessWidget{
                         ),
                       ),
                     ],
-                  ),
-                  Row(
+                  ),*/
+                  ExpansionTile(
+                    title: Column(
+                      children: <Widget>[
+                        Row(
+                            children: <Widget>[
+                              Padding(
+                                padding: EdgeInsets.all(4),
+                                child: Container(
+                                  //height: 100,
+                                  child: Text('Process:' + lls[index][0] ,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: _textcolor,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        Row(
+                            children: <Widget>[
+                              Padding(
+                                padding: EdgeInsets.all(4),
+                                child: Container(
+                                  //height: 50,
+                                  child: Text('Start Time: ' + lls[index][1],
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: _textcolor,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        Row(
+                            children: <Widget>[
+                              Padding(
+                                padding: EdgeInsets.all(4),
+                                child: Container(
+                                  //height: 50,
+                                  child: Text('End Time: ' + lls[index][2],
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: _textcolor,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                      ],
+                    ),
                     children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.all(4),
-                        child: Container(
-                          //height: 50,
-                          child: Text('Ready Queue: P1 P2 P3 P4 P5 P6 P7 P8',
-                            style: TextStyle(
-                              fontSize: 20,
+                      Row(
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.all(4),
+                            child: Container(
+                              //height: 50,
+                              child: Text('Ready Queue:' + _rq ,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.all(4),
-                        child: Container(
-                          //height: 50,
-                          child: Text('Finished Queue: P1 P2 P3 P4 P5 P6 P7 P8',
-                            style: TextStyle(
-                              fontSize: 20,
+                      Row(
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.all(4),
+                            child: Container(
+                              //height: 50,
+                              child: Text('Finished Queue:' + _tq,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                        ],
                       ),
                     ],
                   ),
