@@ -21,6 +21,7 @@ class _FCFSIOBTState extends State<FCFSIOBT> {
   List<List<String>> _cardvs = [];
 
   void _run(){
+    //print('running');
     _cardv.clear();
     _cardvs.clear();
     int cal = 0, st = 0,_tt=0;
@@ -68,6 +69,7 @@ class _FCFSIOBTState extends State<FCFSIOBT> {
       vis[loc]++;
       _tt++;
     }
+    for (int i = 0; i < _counter; ++i) _data[i][0] = artime[i];
   }
 
   void _calculate() {
