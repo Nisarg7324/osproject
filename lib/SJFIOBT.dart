@@ -78,7 +78,7 @@ class _SJFIOBTState extends State<SJFIOBT> {
       vis[loc]++;
       _tt++;
     }
-
+    for (int i = 0; i < _counter; ++i) _data[i][0] = artime[i];
 
   }
 
