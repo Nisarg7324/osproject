@@ -85,11 +85,11 @@ class _SRTFIOBTState extends State<SRTFIOBT> {
           if(_tt==0 && _cardv[_tt][0]==0 && _cardv[_tt][1]==0 && _cardv[_tt][2]==0){
             _cardv[_tt][0]=loc;
             _cardv[_tt][1]=st;
-            _cardv[_tt][2]=st+1;
+            _cardv[_tt][2]=st;
             _cardv[_tt][3]=2;
           }
           else if(_cardv[_tt][0]==loc){
-            _cardv[_tt][2]++;
+            //_cardv[_tt][2]++;
             _cardv[_tt][3]=2;
           }
           else{
@@ -98,7 +98,7 @@ class _SRTFIOBTState extends State<SRTFIOBT> {
             _cardvs.add(['0', '0', '0', '0']);
             _cardv[_tt][0]=loc;
             _cardv[_tt][1]=st;
-            _cardv[_tt][2]=st+1;
+            _cardv[_tt][2]=st;
             _cardv[_tt][3]=2;
           }
           _data[loc][0] = st + _data[loc][2];
