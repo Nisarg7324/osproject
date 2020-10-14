@@ -60,7 +60,9 @@ class Vcard extends StatelessWidget{
     _rq="";
     _tq="";
     for(var j=index+1;j<ls.length;++j) _rq+= ' P'+lls[j][0];
-    for(var j=0;j<index;++j) _tq+= ' P'+lls[j][0];
+    for(var j=0;j<index;++j)
+      if(lls[j][3]=='1')
+        _tq+= ' P'+lls[j][0];
   }
 
   isCompleted(){
