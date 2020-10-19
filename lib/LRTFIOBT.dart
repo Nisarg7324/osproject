@@ -19,10 +19,12 @@ class _LRTFIOBTState extends State<LRTFIOBT> {
   List<List<String>> _datas = [];
   List<List<int>> _cardv = [];
   List<List<String>> _cardvs = [];
+  List<List<bool>> _readyq=[];
 
   void _run(){
     _cardv.clear();
     _cardvs.clear();
+    _readyq.clear();
     _cardv.add([0, 0, 0, 0]);
     _cardvs.add(['0', '0', '0', '0']);
     int cal = 0, st = 0, _tt=0;
@@ -39,6 +41,7 @@ class _LRTFIOBTState extends State<LRTFIOBT> {
       bt2[i] = _data[i][3];
     }
     while (cal != 2 * _counter) {
+      _readyq.add(List.filled(_counter, false));
       var mx = -1,
           loc = 0;
       bool f = true;
@@ -48,9 +51,14 @@ class _LRTFIOBTState extends State<LRTFIOBT> {
           loc = i;
           f = false;
         }
+        /*
+        if((vis[i] == 0 || vis[i] == 1) && st >= _data[i][0]){
+          _readyq[_tt][i]=true;
+        }*/
       }
       if (f) {
         st++;
+        //_readyq.removeLast();
         continue;
       }
       //print(vis[loc]);
@@ -64,6 +72,11 @@ class _LRTFIOBTState extends State<LRTFIOBT> {
             _cardv[_tt][0]=loc;
             _cardv[_tt][1]=st;
             _cardv[_tt][2]=st+1;
+            for (var i = 0; i < _counter; ++i) {
+              if((vis[i] == 0 || vis[i] == 1) && st >= _data[i][0]){
+                _readyq[_tt][i]=true;
+              }
+            }
           }
           else if(_cardv[_tt][0]==loc && _cardv[_tt][2]==st){
             _cardv[_tt][2]++;
@@ -74,6 +87,11 @@ class _LRTFIOBTState extends State<LRTFIOBT> {
             _cardvs.add(['0', '0', '0', '0']);
             _cardv[_tt][0]=loc;
             _cardv[_tt][1]=st;
+            for (var i = 0; i < _counter; ++i) {
+              if((vis[i] == 0 || vis[i] == 1) && st >= _data[i][0]){
+                _readyq[_tt][i]=true;
+              }
+            }
             _cardv[_tt][2]=st+1;
           }
           st++;
@@ -87,6 +105,11 @@ class _LRTFIOBTState extends State<LRTFIOBT> {
             _cardv[_tt][1]=st;
             _cardv[_tt][2]=st;
             _cardv[_tt][3]=2;
+            for (var i = 0; i < _counter; ++i) {
+              if((vis[i] == 0 || vis[i] == 1) && st >= _data[i][0]){
+                _readyq[_tt][i]=true;
+              }
+            }
           }
           else if(_cardv[_tt][0]==loc){
             //_cardv[_tt][2]++;
@@ -100,6 +123,11 @@ class _LRTFIOBTState extends State<LRTFIOBT> {
             _cardv[_tt][1]=st;
             _cardv[_tt][2]=st;
             _cardv[_tt][3]=2;
+            for (var i = 0; i < _counter; ++i) {
+              if((vis[i] == 0 || vis[i] == 1) && st >= _data[i][0]){
+                _readyq[_tt][i]=true;
+              }
+            }
           }
           _data[loc][0] = st + _data[loc][2];
           vis[loc]++;
@@ -112,6 +140,11 @@ class _LRTFIOBTState extends State<LRTFIOBT> {
           if(_tt==0 && _cardv[_tt][0]==0 && _cardv[_tt][1]==0 && _cardv[_tt][2]==0){
             _cardv[_tt][0]=loc;
             _cardv[_tt][1]=st;
+            for (var i = 0; i < _counter; ++i) {
+              if((vis[i] == 0 || vis[i] == 1) && st >= _data[i][0]){
+                _readyq[_tt][i]=true;
+              }
+            }
             _cardv[_tt][2]=st+1;
           }
           else if(_cardv[_tt][0]==loc && _cardv[_tt][2]==st){
@@ -123,6 +156,11 @@ class _LRTFIOBTState extends State<LRTFIOBT> {
             _tt++;
             _cardv.add([0, 0, 0, 0]);
             _cardvs.add(['0', '0', '0', '0']);
+            for (var i = 0; i < _counter; ++i) {
+              if((vis[i] == 0 || vis[i] == 1) && st >= _data[i][0]){
+                _readyq[_tt][i]=true;
+              }
+            }
             _cardv[_tt][0]=loc;
             _cardv[_tt][1]=st;
             _cardv[_tt][2]=st+1;
@@ -137,6 +175,11 @@ class _LRTFIOBTState extends State<LRTFIOBT> {
             _cardv[_tt][1]=st;
             _cardv[_tt][2]=st;
             _cardv[_tt][3]=1;
+            for (var i = 0; i < _counter; ++i) {
+              if((vis[i] == 0 || vis[i] == 1) && st >= _data[i][0]){
+                _readyq[_tt][i]=true;
+              }
+            }
           }
           else if(_cardv[_tt][0]==loc){
             //_cardv[_tt][2]++;
@@ -150,6 +193,11 @@ class _LRTFIOBTState extends State<LRTFIOBT> {
             _cardv[_tt][1]=st;
             _cardv[_tt][2]=st;
             _cardv[_tt][3]=1;
+            for (var i = 0; i < _counter; ++i) {
+              if((vis[i] == 0 || vis[i] == 1) && st >= _data[i][0]){
+                _readyq[_tt][i]=true;
+              }
+            }
           }
           vis[loc]++;
           cal++;
@@ -507,7 +555,7 @@ class _LRTFIOBTState extends State<LRTFIOBT> {
                       onPressed: (){
                         _run();
                         Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => CARD(_cardvs),
+                          builder: (context) => CARD(_cardvs,_readyq),
                         ));
 
                       },

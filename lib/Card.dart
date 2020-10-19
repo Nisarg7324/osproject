@@ -1,27 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import './Vcard.dart';
 
 class CARD extends StatefulWidget{
   List ll=[];
-  CARD(List _cardvs)
+  List rq=[];
+  CARD(List _cardvs,List _readyq)
   {
-    ll=_cardvs;
-  }
 
+    ll=_cardvs;
+    rq=_readyq;
+  }
 
 
 
   @override
   State<StatefulWidget> createState() {
-    return CARDstate(ll);
+    return CARDstate(ll,rq);
   }
 
 }
 
 class CARDstate extends State{
   List ls=[];
-  CARDstate(ll)
+  List rqq=[];
+  CARDstate(ll,rq)
   {
+    //print("Hello from here");
     ls=ll;
+    rqq=rq;
   }
 
 
@@ -37,81 +45,50 @@ class CARDstate extends State{
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              for(var i=0;i<ls.length;i++) Vcard(i,ls)
-              //Vcard(0,ls),
-              //Vcard(1,ls),
+              for(var i=0;i<ls.length;i++) Vcard(i,ls,rqq)
             ],
           ),
         )
       ),
     );
   }
-
 }
 
+
 class Vcard extends StatelessWidget{
+
+  Color _textcolor=Colors.black;
+
   var index;
   List lls;
+  List rqqq;
   String _rq;
   String _tq;
-  Vcard(int i, List ls){
+  Vcard(int i, List ls, List rqq){
     index=i;
     lls=ls;
+    rqqq=rqq;
     _rq="";
     _tq="";
-    for(var j=index+1;j<ls.length;++j) _rq+= ' P'+lls[j][0];
+    int c=rqqq[i].length;
+    //print(c);
+    for(int j=0;j<c;j++){
+      if(rqq[i][j] && ls[i][0]!=j){
+        if(j.toString()!=lls[index][0]){
+          print(j);
+          print(lls[index][0]);
+          print('---');
+          _rq+= ' P'+j.toString();
+        }
+
+      }
+    }
+    print('********');
+
     for(var j=0;j<index;++j)
       if(lls[j][3]=='1')
         _tq+= ' P'+lls[j][0];
   }
-
-  isCompleted(){
-    if(lls[index][3]=='1'){
-      return Row(
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.all(4),
-            child: Container(
-              //height: 100,
-              child: Text('Process ' + lls[index][0] + ' Is Finished',
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.green
-                ),
-              ),
-            ),
-          ),
-        ],
-      );
-    }
-    else if(lls[index][3]=='2'){
-      return Row(
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.all(4),
-            child: Container(
-              //height: 100,
-              child: Text('Process ' + lls[index][0] + ' Will go for IO Burst ',
-                style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.green
-                ),
-              ),
-            ),
-          ),
-        ],
-      );
-    }
-    else{
-      return Container(
-        child: Text(' '),
-      );
-    }
-  }
-
-  Color _textcolor=Colors.black;
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -126,102 +103,62 @@ class Vcard extends StatelessWidget{
               padding: EdgeInsets.all(10),
               child: Column(
                 children: <Widget>[
-                  /*Row(
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.all(4),
-                        child: Container(
-                          //height: 100,
-                          child: Text('Process:' + lls[index][0] ,
-                            style: TextStyle(
-                              fontSize: 20,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.all(4),
-                        child: Container(
-                          //height: 50,
-                          child: Text('Start Time: ' + lls[index][1],
-                            style: TextStyle(
-                              fontSize: 20,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.all(4),
-                        child: Container(
-                          //height: 50,
-                          child: Text('End Time: ' + lls[index][2],
-                            style: TextStyle(
-                              fontSize: 20,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),*/
-                  ExpansionTile(
+
+                  /*ExpansionTile(
+                    trailing: Icon(
+                        FontAwesomeIcons.chevronCircleDown
+                    ),
+
                     title: Column(
                       children: <Widget>[
                         Row(
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.all(4),
-                                child: Container(
-                                  //height: 100,
-                                  child: Text('Process:' + lls[index][0] ,
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      color: _textcolor,
-                                    ),
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.all(4),
+                              child: Container(
+                                //height: 100,
+                                child: Text('Process:' + lls[index][0] ,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: _textcolor,
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
+                        ),
                         Row(
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.all(4),
-                                child: Container(
-                                  //height: 50,
-                                  child: Text('Start Time: ' + lls[index][1],
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      color: _textcolor,
-                                    ),
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.all(4),
+                              child: Container(
+                                //height: 50,
+                                child: Text('Start Time: ' + lls[index][1],
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: _textcolor,
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
+                        ),
                         Row(
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.all(4),
-                                child: Container(
-                                  //height: 50,
-                                  child: Text('End Time: ' + lls[index][2],
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      color: _textcolor,
-                                    ),
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.all(4),
+                              child: Container(
+                                //height: 50,
+                                child: Text('End Time: ' + lls[index][2],
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: _textcolor,
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                     children: <Widget>[
@@ -256,10 +193,8 @@ class Vcard extends StatelessWidget{
                         ],
                       ),
                     ],
-                  ),
-                  //isCompleted(),
-
-
+                  ),*/
+                  customExpansionTile(index,lls,rqqq,_rq,_tq),
                 ],
               )
           ),
@@ -272,3 +207,4 @@ class Vcard extends StatelessWidget{
   }
 
 }
+

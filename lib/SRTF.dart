@@ -18,10 +18,12 @@ class _SRTFState extends State<SRTF> {
   List<List<String>> _datas = [];
   List<List<int>> _cardv = [];
   List<List<String>> _cardvs = [];
+  List<List<bool>> _readyq = [];
 
   void _run(){
     _cardv.clear();
     _cardvs.clear();
+    _readyq.clear();
     _cardv.add([0,0,0,0]);
     _cardvs.add(['0','0', '0','0']);
     int cal = 0, st = 0,_t=0;
@@ -31,6 +33,7 @@ class _SRTFState extends State<SRTF> {
     val = new List<int>.filled(_counter, 0);
     for (int i = 0; i < _counter; ++i) val[i] = _data[i][1];
     while (cal != _counter) {
+      _readyq.add(List.filled(_counter, false));
       var mn = 100,
           loc = 0;
       bool f = true;
@@ -40,9 +43,13 @@ class _SRTFState extends State<SRTF> {
           loc = i;
           f = false;
         }
+        if(!vis[i] && st >= _data[i][0]){
+          _readyq[_t][i]=true;
+        }
       }
       if (f) {
         st++;
+        _readyq.removeLast();
         continue;
       }
       if (_data[loc][1] > 0) {
@@ -317,7 +324,7 @@ class _SRTFState extends State<SRTF> {
                       onPressed: (){
                         _run();
                         Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => CARD(_cardvs),
+                          builder: (context) => CARD(_cardvs,_readyq),
                         ));
 
                       },

@@ -18,19 +18,26 @@ class _FCFSState extends State<FCFS> {
   List<List<String>> _datas = [];
   List<List<int>> _cardv = [];
   List<List<String>> _cardvs = [];
+  List<List<bool>> _readyq = [];
 
   void _run(){
     _cardv.clear();
     _cardvs.clear();
+    _readyq.clear();
+
     int cal = 0, st = 0,_tt=0;
     List<bool> vis;
     vis = new List<bool>.filled(_counter, false);
     while (cal != _counter) {
+      _readyq.add(List.filled(_counter, false));
       var mn = 100, loc = 0;
       for (var i = 0; i < _counter; ++i) {
         if (_data[i][0] < mn && !vis[i]) {
           mn = _data[i][0];
           loc = i;
+        }
+        if(!vis[i] && st>=_data[i][0]){
+          _readyq[_tt][i]=true;
         }
       }
       _cardv.add([0,0,0,0]);
@@ -278,7 +285,7 @@ class _FCFSState extends State<FCFS> {
                         onPressed: (){
                           _run();
                           Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => CARD(_cardvs),
+                            builder: (context) => CARD(_cardvs,_readyq),
                           ));
 
                         },

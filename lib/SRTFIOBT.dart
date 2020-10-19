@@ -19,10 +19,12 @@ class _SRTFIOBTState extends State<SRTFIOBT> {
   List<List<String>> _datas = [];
   List<List<int>> _cardv = [];
   List<List<String>> _cardvs = [];
+  List<List<bool>> _readyq = [];
 
   void _run(){
     _cardv.clear();
     _cardvs.clear();
+    _readyq.clear();
     _cardv.add([0, 0, 0, 0]);
     _cardvs.add(['0', '0', '0', '0']);
     int cal = 0, st = 0,_tt=0;
@@ -40,6 +42,7 @@ class _SRTFIOBTState extends State<SRTFIOBT> {
     }
 
     while (cal != 2 * _counter) {
+      _readyq.add(List.filled(_counter, false));
       var mn = 100,
           loc = 0;
       bool f = true;
@@ -49,9 +52,13 @@ class _SRTFIOBTState extends State<SRTFIOBT> {
           loc = i;
           f = false;
         }
+        if((vis[i] == 0 || vis[i] == 1) && st >= _data[i][0]){
+          _readyq[_tt][i]=true;
+        }
       }
       if (f) {
         st++;
+        _readyq.removeLast();
         continue;
       }
       //print(loc);
@@ -506,7 +513,7 @@ class _SRTFIOBTState extends State<SRTFIOBT> {
                       onPressed: (){
                         _run();
                         Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => CARD(_cardvs),
+                          builder: (context) => CARD(_cardvs,_readyq),
                         ));
 
                       },

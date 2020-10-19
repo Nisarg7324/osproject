@@ -19,10 +19,12 @@ class _LJFIOBTState extends State<LJFIOBT> {
   List<List<String>> _datas = [];
   List<List<int>> _cardv = [];
   List<List<String>> _cardvs = [];
+  List<List<bool>> _readyq = [];
 
   void _run(){
     _cardv.clear();
     _cardvs.clear();
+    _readyq.clear();
     int cal = 0, st = 0,_tt=-1;
     List<int> vis, artime, tbt;
     vis = new List<int>.filled(_counter, 0);
@@ -33,6 +35,7 @@ class _LJFIOBTState extends State<LJFIOBT> {
       tbt[i] = _data[i][1] + _data[i][3];
     }
     while (cal != 2 * _counter) {
+      _readyq.add(List.filled(_counter, false));
       var mx = -1,
           loc = 0;
       bool f = true;
@@ -42,9 +45,14 @@ class _LJFIOBTState extends State<LJFIOBT> {
           loc = i;
           f = false;
         }
+        //print(_tt);
+        if((vis[i] == 0 || vis[i] == 1) && st >= _data[i][0]){
+          _readyq[_tt+1][i]=true;
+        }
       }
       if (f) {
         st++;
+        _readyq.removeLast();
         continue;
       }
       cal++;
@@ -62,7 +70,7 @@ class _LJFIOBTState extends State<LJFIOBT> {
         _data[loc][0] = _data[loc][4] + _data[loc][2];
         tbt[loc] -= _data[loc][1];
       }
-      if (vis[loc] == 1) {
+      else if (vis[loc] == 1) {
         _tt++;
         _cardv.add([0, 0, 0, 0]);
         _cardvs.add(['0', '0', '0', '0']);
@@ -397,7 +405,7 @@ class _LJFIOBTState extends State<LJFIOBT> {
                       onPressed: (){
                         _run();
                         Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => CARD(_cardvs),
+                          builder: (context) => CARD(_cardvs,_readyq),
                         ));
 
                       },

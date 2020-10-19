@@ -19,23 +19,29 @@ class _FCFSIOBTState extends State<FCFSIOBT> {
   List<List<String>> _datas = [];
   List<List<int>> _cardv = [];
   List<List<String>> _cardvs = [];
+  List<List<bool>> _readyq=[];
 
   void _run(){
     //print('running');
     _cardv.clear();
     _cardvs.clear();
+    _readyq.clear();
     int cal = 0, st = 0,_tt=0;
     List<int> vis, artime;
     vis = new List<int>.filled(_counter, 0);
     artime = new List<int>.filled(_counter, 0);
     for (int i = 0; i < _counter; ++i) artime[i] = _data[i][0];
     while (cal != 2 * _counter) {
+      _readyq.add(List.filled(_counter, false));
       var mn = 100,
           loc = 0;
       for (var i = 0; i < _counter; ++i) {
         if (_data[i][0] < mn && (vis[i] == 0 || vis[i] == 1)) {
           mn = _data[i][0];
           loc = i;
+        }
+        if((vis[i]==0 || vis[i]==1) && st>=_data[loc][0]){
+          _readyq[_tt][i]=true;
         }
       }
       cal++;
@@ -371,7 +377,7 @@ class _FCFSIOBTState extends State<FCFSIOBT> {
                       onPressed: (){
                         _run();
                         Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => CARD(_cardvs),
+                          builder: (context) => CARD(_cardvs,_readyq),
                         ));
 
                       },
