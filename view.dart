@@ -69,15 +69,13 @@ class _viewState extends State<view> {
                                   border: Border.all(color: Colors.red)),
                               width: 250,
                               height: 50,
-                              child: Expanded(
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Center(
-                                    child: Text(
-                                      Na[_t],
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 25),
-                                    ),
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Center(
+                                  child: Text(
+                                    Na[_t],
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 25),
                                   ),
                                 ),
                               ),
