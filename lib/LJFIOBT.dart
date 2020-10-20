@@ -21,7 +21,11 @@ class _LJFIOBTState extends State<LJFIOBT> {
   List<List<String>> _cardvs = [];
   List<List<bool>> _readyq = [];
 
-  void _run(){
+  void _viz(){
+
+  }
+
+  void _Gant(){
     _cardv.clear();
     _cardvs.clear();
     _readyq.clear();
@@ -399,11 +403,31 @@ class _LJFIOBTState extends State<LJFIOBT> {
                         side: BorderSide(color: Colors.red),
                       ),
                       child: Text(
-                        'Run',
+                        'Delete Process',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onPressed: _RemoveRow,
+                    )),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: (RaisedButton(
+                      color: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        side: BorderSide(color: Colors.red),
+                      ),
+                      child: Text(
+                        'Gantt Chart',
                         style: TextStyle(color: Colors.white),
                       ),
                       onPressed: (){
-                        _run();
+                        _Gant();
                         Navigator.push(context, MaterialPageRoute(
                           builder: (context) => CARD(_cardvs,_readyq),
                         ));
@@ -420,12 +444,12 @@ class _LJFIOBTState extends State<LJFIOBT> {
                         side: BorderSide(color: Colors.red),
                       ),
                       child: Text(
-                        'Delete Process',
+                        'Visulization',
                         style: TextStyle(color: Colors.white),
                       ),
-                      onPressed: _RemoveRow,
+                      onPressed: _viz,
                     )),
-                  )
+                  ),
                 ],
               ),
               Container(height:700),

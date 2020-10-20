@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import './FCFS.dart';
 import './Card.dart';
+import './View.dart';
 
 //FCFS page stateful class
 class FCFSIOBT extends StatefulWidget {
@@ -21,7 +22,11 @@ class _FCFSIOBTState extends State<FCFSIOBT> {
   List<List<String>> _cardvs = [];
   List<List<bool>> _readyq=[];
 
-  void _run(){
+  void _viz(){
+
+  }
+
+  void _Gant(){
     //print('running');
     _cardv.clear();
     _cardvs.clear();
@@ -371,11 +376,31 @@ class _FCFSIOBTState extends State<FCFSIOBT> {
                         side: BorderSide(color: Colors.red),
                       ),
                       child: Text(
-                        'Run',
+                        'Delete Process',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onPressed: _RemoveRow,
+                    )),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: (RaisedButton(
+                      color: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        side: BorderSide(color: Colors.red),
+                      ),
+                      child: Text(
+                        'Gantt Chart',
                         style: TextStyle(color: Colors.white),
                       ),
                       onPressed: (){
-                        _run();
+                        _Gant();
                         Navigator.push(context, MaterialPageRoute(
                           builder: (context) => CARD(_cardvs,_readyq),
                         ));
@@ -392,14 +417,16 @@ class _FCFSIOBTState extends State<FCFSIOBT> {
                         side: BorderSide(color: Colors.red),
                       ),
                       child: Text(
-                        'Delete Process',
+                        'Visulization',
                         style: TextStyle(color: Colors.white),
                       ),
-                      onPressed: _RemoveRow,
+                      onPressed: _viz,
                     )),
-                  )
+                  ),
                 ],
               ),
+              Container(height:700),
+
             ],
           ),
         ));

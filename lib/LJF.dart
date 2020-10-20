@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import './LJFIOBT.dart';
 import './Card.dart';
+import './View.dart';
 
 //LJF page stateful class
 class LJF extends StatefulWidget {
@@ -19,8 +20,131 @@ class _LJFState extends State<LJF> {
   List<List<int>> _cardv = [];
   List<List<String>> _cardvs = [];
   List<List<bool>> _readyq = [];
+  List<String> _Na = [], _Re = [], _Ru = [], _Te = [];
+  List<List<Widget>> _disdata = [], _disNum = [];
 
-  void _run(){
+  void _viz(){
+    int fct = 0;
+    for (int i = 0; i < _counter; ++i) {
+      fct = max(fct, _data[i][2]);
+    }
+    List<int> _ddata;
+    _ddata = new List<int>.filled(fct + 1, -1);
+    for (int i = 0; i < _counter; ++i) {
+      int start = _data[i][0] + _data[i][4];
+      for (int j = start + 1; j <= _data[i][2]; ++j) {
+        _ddata[j] = i;
+      }
+    }
+    _disdata.clear();
+    _disdata.add([]);
+    _disNum.clear();
+    _disNum.add([]);
+    for (int i = 1; i <= fct; ++i) {
+      _disdata.add([]);
+      _disNum.add(
+        [
+          Container(
+            height: 30,
+            child: Text(
+              '0',
+              style: TextStyle(color: Colors.white, fontSize: 25),
+            ),
+          ),
+        ],
+      );
+      for (int j = 1; j <= i; ++j) {
+        String temp = 'P' + _ddata[j].toString();
+        if (_ddata[j] == -1) temp = ' ';
+        if (j + 1 <= i && _ddata[j] == _ddata[j + 1]) continue;
+        _disNum[i].add(
+          Container(height: 70),
+        );
+        _disNum[i].add(
+          Container(
+            height: 30,
+            child: Text(
+              j.toString(),
+              style: TextStyle(color: Colors.white, fontSize: 25),
+            ),
+          ),
+        );
+        if (j == i && j + 1 <= fct && _ddata[j] == _ddata[j + 1]) {
+          _disdata[i].add(
+            Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  left: BorderSide(color: Colors.red),
+                  right: BorderSide(color: Colors.red),
+                  top: BorderSide(color: Colors.red),
+                ),
+              ), //all(color: Colors.red)),
+              width: 100,
+              height: 100,
+              child: Center(
+                child: Text(
+                  temp,
+                  style: TextStyle(color: Colors.white, fontSize: 25),
+                ),
+              ),
+            ),
+          );
+          continue;
+        }
+        _disdata[i].add(
+          Container(
+            decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+            width: 100,
+            height: 100,
+            child: Center(
+              child: Text(
+                temp,
+                style: TextStyle(color: Colors.white, fontSize: 25),
+              ),
+            ),
+          ),
+        );
+      }
+    }
+    _Na.clear();
+    _Re.clear();
+    _Ru.clear();
+    _Te.clear();
+    for (int i = 0; i <= fct; ++i) {
+      String tempNa = '', tempRe = '', tempTe = '', tempRu = '';
+      for (int j = 0; j < _counter; ++j) {
+        if (_data[j][0] > i) {
+          if (tempNa.isEmpty)
+            tempNa += 'P' + j.toString();
+          else
+            tempNa += ', P' + j.toString();
+        } else if (_data[j][4] + _data[j][0] >= i) {
+          if (tempRe.isEmpty)
+            tempRe += 'P' + j.toString();
+          else
+            tempRe += ', P' + j.toString();
+        } else if (_data[j][2] <= i) {
+          if (tempTe.isEmpty)
+            tempTe += 'P' + j.toString();
+          else
+            tempTe += ', P' + j.toString();
+        } else
+          tempRu += 'P' + j.toString();
+      }
+      _Na.add(tempNa);
+      _Re.add(tempRe);
+      _Te.add(tempTe);
+      _Ru.add(tempRu);
+    }
+
+    view.TakeData('LJF', _Na, _Re, _Ru, _Te, fct, _disdata, _disNum);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => view()),
+    );
+  }
+
+  void _Gant(){
     _cardv.clear();
     _cardvs.clear();
     _readyq.clear();
@@ -288,11 +412,31 @@ class _LJFState extends State<LJF> {
                         side: BorderSide(color: Colors.red),
                       ),
                       child: Text(
-                        'Run',
+                        'Delete Process',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onPressed: _RemoveRow,
+                    )),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: (RaisedButton(
+                      color: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        side: BorderSide(color: Colors.red),
+                      ),
+                      child: Text(
+                        'Gantt Chart',
                         style: TextStyle(color: Colors.white),
                       ),
                       onPressed: (){
-                        _run();
+                        _Gant();
                         Navigator.push(context, MaterialPageRoute(
                           builder: (context) => CARD(_cardvs,_readyq),
                         ));
@@ -309,12 +453,12 @@ class _LJFState extends State<LJF> {
                         side: BorderSide(color: Colors.red),
                       ),
                       child: Text(
-                        'Delete Process',
+                        'Visulization',
                         style: TextStyle(color: Colors.white),
                       ),
-                      onPressed: _RemoveRow,
+                      onPressed: _viz,
                     )),
-                  )
+                  ),
                 ],
               ),
               Container(height:700),
