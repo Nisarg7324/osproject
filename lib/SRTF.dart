@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import './SRTFIOBT.dart';
 import './Card.dart';
+import './View.dart';
 
 //SRTF page stateful class
 class SRTF extends StatefulWidget {
@@ -19,8 +20,169 @@ class _SRTFState extends State<SRTF> {
   List<List<int>> _cardv = [];
   List<List<String>> _cardvs = [];
   List<List<bool>> _readyq = [];
+  List<String> _Na = [], _Re = [], _Ru = [], _Te = [];
+  List<List<Widget>> _disdata = [], _disNum = [];
 
-  void _run(){
+  void _viz(){
+    int fct = 0;
+    for (int i = 0; i < _counter; ++i) {
+      fct = max(fct, _data[i][2]);
+    }
+    List<int> _ddata;
+    _ddata = new List<int>.filled(fct + 1, -1);
+
+    int cal = 0, st = 0;
+    List<bool> vis;
+    List<int> val;
+    vis = new List<bool>.filled(_counter, false);
+    val = new List<int>.filled(_counter, 0);
+    for (int i = 0; i < _counter; ++i) val[i] = _data[i][1];
+    while (cal != _counter) {
+      var mn = 100, loc = 0;
+      bool f = true;
+      for (var i = 0; i < _counter; ++i) {
+        if (_data[i][1] < mn && !vis[i] && st >= _data[i][0]) {
+          mn = _data[i][1];
+          loc = i;
+          f = false;
+        }
+      }
+      if (f) {
+        st++;
+        continue;
+      }
+      if (_data[loc][1] > 0) {
+        st++;
+        _ddata[st] = loc;
+        _data[loc][1]--;
+      }
+      if (_data[loc][1] == 0) {
+        vis[loc] = true;
+        cal++;
+      }
+      _data[loc][2] = st;
+      _data[loc][3] = _data[loc][2] - _data[loc][0];
+      _data[loc][4] = _data[loc][3] - val[loc];
+    }
+    for (int i = 0; i < _counter; ++i) _data[i][1] = val[i];
+
+    List<int> _Running;
+    _Running = new List<int>.filled(fct+1, -1);
+    for (int i = 0; i < fct; ++i) {
+      if (_ddata[i] == _ddata[i + 1]) {
+        _Running[i] = _ddata[i];
+      }
+    }
+    _disdata.clear();
+    _disdata.add([]);
+    _disNum.clear();
+    _disNum.add([]);
+    for (int i = 1; i <= fct; ++i) {
+      _disdata.add([]);
+      _disNum.add(
+        [
+          Container(
+            height: 30,
+            child: Text(
+              '0',
+              style: TextStyle(color: Colors.white, fontSize: 25),
+            ),
+          ),
+        ],
+      );
+      for (int j = 1; j <= i; ++j) {
+        String temp = 'P' + _ddata[j].toString();
+        if (_ddata[j] == -1) temp = ' ';
+        if (j + 1 <= i && _ddata[j] == _ddata[j + 1]) continue;
+        _disNum[i].add(
+          Container(height: 70),
+        );
+        _disNum[i].add(
+          Container(
+            height: 30,
+            child: Text(
+              j.toString(),
+              style: TextStyle(color: Colors.white, fontSize: 25),
+            ),
+          ),
+        );
+        if (j == i && j + 1 <= fct && _ddata[j] == _ddata[j + 1]) {
+          _disdata[i].add(
+            Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  left: BorderSide(color: Colors.red),
+                  right: BorderSide(color: Colors.red),
+                  top: BorderSide(color: Colors.red),
+                ),
+              ),
+              width: 100,
+              height: 100,
+              child: Center(
+                child: Text(
+                  temp,
+                  style: TextStyle(color: Colors.white, fontSize: 25),
+                ),
+              ),
+            ),
+          );
+          continue;
+        }
+        _disdata[i].add(
+          Container(
+            decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+            width: 100,
+            height: 100,
+            child: Center(
+              child: Text(
+                temp,
+                style: TextStyle(color: Colors.white, fontSize: 25),
+              ),
+            ),
+          ),
+        );
+      }
+    }
+    _Na.clear();
+    _Re.clear();
+    _Ru.clear();
+    _Te.clear();
+    for (int i = 0; i <= fct; ++i) {
+      String tempNa = '', tempRe = '', tempTe = '', tempRu = '';
+      for (int j = 0; j < _counter; ++j) {
+        if (_data[j][0] > i) {
+          if (tempNa.isEmpty)
+            tempNa += 'P' + j.toString();
+          else
+            tempNa += ', P' + j.toString();
+        } else if (_data[j][2] <= i) {
+          if (tempTe.isEmpty)
+            tempTe += 'P' + j.toString();
+          else
+            tempTe += ', P' + j.toString();
+        } else if (_Running[i] == j) {
+          tempRu += 'P' + j.toString();
+        } else {
+          if (tempRe.isEmpty)
+            tempRe += 'P' + j.toString();
+          else
+            tempRe += ', P' + j.toString();
+        }
+      }
+      _Na.add(tempNa);
+      _Te.add(tempTe);
+      _Re.add(tempRe);
+      _Ru.add(tempRu);
+    }
+
+    view.TakeData('SRTF', _Na, _Re, _Ru, _Te, fct, _disdata, _disNum);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => view()),
+    );
+  }
+
+  void _Gant(){
     _cardv.clear();
     _cardvs.clear();
     _readyq.clear();
@@ -43,13 +205,14 @@ class _SRTFState extends State<SRTF> {
           loc = i;
           f = false;
         }
+        /*
         if(!vis[i] && st >= _data[i][0]){
           _readyq[_t][i]=true;
-        }
+        }*/
       }
       if (f) {
         st++;
-        _readyq.removeLast();
+        //_readyq.removeLast();
         continue;
       }
       if (_data[loc][1] > 0) {
@@ -57,6 +220,11 @@ class _SRTFState extends State<SRTF> {
             _cardv[_t][0]=loc;
             _cardv[_t][1]=st;
             _cardv[_t][2]=st+1;
+            for (var i = 0; i < _counter; ++i) {
+              if(!vis[i] && st >= _data[i][0]){
+                _readyq[_t][i]=true;
+              }
+            }
           }
         else if(_cardv[_t][0]==loc){
           _cardv[_t][2]++;
@@ -68,6 +236,11 @@ class _SRTFState extends State<SRTF> {
           _cardv[_t][0]=loc;
           _cardv[_t][1]=st;
           _cardv[_t][2]=st+1;
+          for (var i = 0; i < _counter; ++i) {
+            if(!vis[i] && st >= _data[i][0]){
+              _readyq[_t][i]=true;
+            }
+          }
         }
         st++;
         _data[loc][1]--;
@@ -318,11 +491,31 @@ class _SRTFState extends State<SRTF> {
                         side: BorderSide(color: Colors.red),
                       ),
                       child: Text(
-                        'Run',
+                        'Delete Process',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onPressed: _RemoveRow,
+                    )),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: (RaisedButton(
+                      color: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        side: BorderSide(color: Colors.red),
+                      ),
+                      child: Text(
+                        'Gantt Chart',
                         style: TextStyle(color: Colors.white),
                       ),
                       onPressed: (){
-                        _run();
+                        _Gant();
                         Navigator.push(context, MaterialPageRoute(
                           builder: (context) => CARD(_cardvs,_readyq),
                         ));
@@ -339,12 +532,12 @@ class _SRTFState extends State<SRTF> {
                         side: BorderSide(color: Colors.red),
                       ),
                       child: Text(
-                        'Delete Process',
+                        'Visulization',
                         style: TextStyle(color: Colors.white),
                       ),
-                      onPressed: _RemoveRow,
+                      onPressed: _viz,
                     )),
-                  )
+                  ),
                 ],
               ),
               Container(height:700),
