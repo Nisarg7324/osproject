@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import './RRIOBT.dart';
+import './view.dart';
 
 //FCFS page stateful class
 class RR extends StatefulWidget {
@@ -14,6 +15,8 @@ class _RRState extends State<RR> {
   List<DataRow> _rowList = [];
   List<List<int>> _data = [];
   List<List<String>> _datas = [];
+  List<String> _Na = [], _Re = [], _Ru = [], _Te = [];
+  List<List<Widget>> _disdata = [], _disNum = [];
 
   void _calculate() {
     int st = 0;
@@ -102,8 +105,11 @@ class _RRState extends State<RR> {
         _data[i][3] = _data[i][2] - at[i];
         _data[i][4] = _data[i][3] - bt[i];
       } else {
-        st += TQ;
+        st = max(st, _data[i][0]) + TQ;
         _data[i][1] -= TQ;
+        _data[i][2] = st;
+        _data[i][3] = _data[i][2] - at[i];
+        _data[i][4] = _data[i][3] - bt[i];
       }
     }
     for (int i = 0; i < _counter; ++i) {
@@ -199,6 +205,225 @@ class _RRState extends State<RR> {
       _datas.removeLast();
       _calculate();
     });
+  }
+
+  void _run() {
+    int fct = 0;
+    for (int i = 0; i < _counter; ++i) {
+      fct = max(fct, _data[i][2]);
+    }
+    List<int> _ddata;
+    _ddata = new List<int>.filled(fct + 1, -1);
+
+    int st = 0;
+    List<int> RQ = [], bt, at;
+    bt = new List<int>.filled(_counter, 0);
+    at = new List<int>.filled(_counter, 0);
+    for (int i = 0; i < _counter; ++i) {
+      bt[i] = _data[i][1];
+      at[i] = _data[i][0];
+    }
+    int mn = 100;
+    for (int i = 0; i < _counter; ++i) {
+      if (mn > _data[i][0] && _data[i][1] > 0) {
+        mn = _data[i][0];
+      }
+    }
+    if (mn == 100) return;
+    for (int i = 0; i < _counter; ++i) {
+      if (_data[i][0] == mn) RQ.add(i);
+    }
+    int it = 0, et = 0;
+    while (true) {
+      bool flag = true;
+      for (int i = 0; i < _counter; ++i) {
+        if (_data[i][1] > 0) flag = false;
+      }
+      if (flag) break;
+      if (it < RQ.length && _data[RQ[it]][1] <= 0) {
+        it++;
+        continue;
+      }
+      if (it < RQ.length) {
+        if (_data[RQ[it]][1] >= TQ) {
+          _data[RQ[it]][1] -= TQ;
+          _data[RQ[it]][0] += TQ;
+          for (int i = et + 1; i <= et + TQ; i++) {
+            for (int j = 0; j < _counter; ++j) {
+              if (_data[j][1] > 0 && _data[j][0] == i && RQ[it] != j) {
+                RQ.add(j);
+              }
+            }
+          }
+          et += TQ;
+          if (_data[RQ[it]][1] > 0) RQ.add(RQ[it]);
+          it++;
+        } else {
+          int temp = min(_data[RQ[it]][1], TQ);
+          _data[RQ[it]][1] -= temp;
+          _data[RQ[it]][0] += temp;
+          for (int i = et + 1; i <= et + temp; i++) {
+            for (int j = 0; j < _counter; ++j) {
+              if (_data[j][1] > 0 && _data[j][0] == i && RQ[it] != j) {
+                RQ.add(j);
+              }
+            }
+          }
+          et += temp;
+          if (_data[RQ[it]][1] > 0) RQ.add(RQ[it]);
+          it++;
+        }
+      } else {
+        mn = 100;
+        for (int i = 0; i < _counter; ++i) {
+          if (mn > _data[i][0] && _data[i][1] > 0) {
+            mn = _data[i][0];
+          }
+        }
+        for (int i = 0; i < _counter; ++i) {
+          if (mn == _data[i][0]) RQ.add(i);
+        }
+      }
+    }
+    for (int i = 0; i < _counter; ++i) {
+      int pp = bt[i];
+      _data[i][1] = pp;
+      pp = at[i];
+      _data[i][0] = pp;
+    }
+    st = 0;
+    for (int i in RQ) {
+      if (_data[i][1] <= 0) continue;
+      if (_data[i][1] <= TQ) {
+        st = max(st, _data[i][0]) + min(TQ, _data[i][1]);
+        _data[i][1] -= TQ;
+        _data[i][2] = st;
+        _data[i][3] = _data[i][2] - at[i];
+        _data[i][4] = _data[i][3] - bt[i];
+      } else {
+        st += max(st, _data[i][0]) + TQ;
+        _data[i][1] -= TQ;
+      }
+    }
+    for (int i = 0; i < _counter; ++i) {
+      _data[i][1] = bt[i];
+      _data[i][0] = at[i];
+    }
+
+    List<int> _Running;
+    _Running = new List<int>.filled(fct + 1, -1);
+    for (int i = 0; i < fct; ++i) {
+      if (_ddata[i] == _ddata[i + 1]) {
+        _Running[i] = _ddata[i];
+      }
+    }
+    _disdata.clear();
+    _disdata.add([]);
+    _disNum.clear();
+    _disNum.add([]);
+    for (int i = 1; i <= fct; ++i) {
+      _disdata.add([]);
+      _disNum.add(
+        [
+          Container(
+            height: 30,
+            child: Text(
+              '0',
+              style: TextStyle(color: Colors.white, fontSize: 25),
+            ),
+          ),
+        ],
+      );
+      for (int j = 1; j <= i; ++j) {
+        String temp = 'P' + _ddata[j].toString();
+        if (_ddata[j] == -1) temp = ' ';
+        if (j + 1 <= i && _ddata[j] == _ddata[j + 1]) continue;
+        _disNum[i].add(
+          Container(height: 70),
+        );
+        _disNum[i].add(
+          Container(
+            height: 30,
+            child: Text(
+              j.toString(),
+              style: TextStyle(color: Colors.white, fontSize: 25),
+            ),
+          ),
+        );
+        if (j == i && j + 1 <= fct && _ddata[j] == _ddata[j + 1]) {
+          _disdata[i].add(
+            Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  left: BorderSide(color: Colors.red),
+                  right: BorderSide(color: Colors.red),
+                  top: BorderSide(color: Colors.red),
+                ),
+              ),
+              width: 100,
+              height: 100,
+              child: Center(
+                child: Text(
+                  temp,
+                  style: TextStyle(color: Colors.white, fontSize: 25),
+                ),
+              ),
+            ),
+          );
+          continue;
+        }
+        _disdata[i].add(
+          Container(
+            decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+            width: 100,
+            height: 100,
+            child: Center(
+              child: Text(
+                temp,
+                style: TextStyle(color: Colors.white, fontSize: 25),
+              ),
+            ),
+          ),
+        );
+      }
+    }
+    _Na.clear();
+    _Re.clear();
+    _Ru.clear();
+    _Te.clear();
+    for (int i = 0; i <= fct; ++i) {
+      String tempNa = '', tempRe = '', tempTe = '', tempRu = '';
+      for (int j = 0; j < _counter; ++j) {
+        if (_data[j][0] > i) {
+          if (tempNa.isEmpty)
+            tempNa += 'P' + j.toString();
+          else
+            tempNa += ', P' + j.toString();
+        } else if (_data[j][2] <= i) {
+          if (tempTe.isEmpty)
+            tempTe += 'P' + j.toString();
+          else
+            tempTe += ', P' + j.toString();
+        } else if (_Running[i] == j) {
+          tempRu += 'P' + j.toString();
+        } else {
+          if (tempRe.isEmpty)
+            tempRe += 'P' + j.toString();
+          else
+            tempRe += ', P' + j.toString();
+        }
+      }
+      _Na.add(tempNa);
+      _Te.add(tempTe);
+      _Re.add(tempRe);
+      _Ru.add(tempRu);
+    }
+
+    view.TakeData('RR', _Na, _Re, _Ru, _Te, fct, _disdata, _disNum);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => view()),
+    );
   }
 
   var fo = true;
@@ -326,7 +551,7 @@ class _RRState extends State<RR> {
                         'Run',
                         style: TextStyle(color: Colors.white),
                       ),
-                      onPressed: null,
+                      onPressed: _run,
                     )),
                   ),
                   Align(

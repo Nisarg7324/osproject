@@ -150,7 +150,6 @@ class _SRTFState extends State<SRTF> {
     List<int> _ddata;
     _ddata = new List<int>.filled(fct + 1, -1);
 
-
     int cal = 0, st = 0;
     List<bool> vis;
     List<int> val;
@@ -173,6 +172,7 @@ class _SRTFState extends State<SRTF> {
       }
       if (_data[loc][1] > 0) {
         st++;
+        _ddata[st] = loc;
         _data[loc][1]--;
       }
       if (_data[loc][1] == 0) {
@@ -185,88 +185,83 @@ class _SRTFState extends State<SRTF> {
     }
     for (int i = 0; i < _counter; ++i) _data[i][1] = val[i];
 
-
-
-
-
-
-
-    // for (int i = 0; i < _counter; ++i) {
-    //   int start = _data[i][0] + _data[i][4];
-    //   for (int j = start + 1; j <= _data[i][2]; ++j) {
-    //     _ddata[j] = i;
-    //   }
-    // }
-    // _disdata.clear();
-    // _disdata.add([]);
-    // _disNum.clear();
-    // _disNum.add([]);
-    // for (int i = 1; i <= fct; ++i) {
-    //   _disdata.add([]);
-    //   _disNum.add(
-    //     [
-    //       Container(
-    //         height: 30,
-    //         child: Text(
-    //           '0',
-    //           style: TextStyle(color: Colors.white, fontSize: 25),
-    //         ),
-    //       ),
-    //     ],
-    //   );
-    //   for (int j = 1; j <= i; ++j) {
-    //     String temp = 'P' + _ddata[j].toString();
-    //     if (_ddata[j] == -1) temp = ' ';
-    //     if (j + 1 <= i && _ddata[j] == _ddata[j + 1]) continue;
-    //     _disNum[i].add(
-    //       Container(height: 70),
-    //     );
-    //     _disNum[i].add(
-    //       Container(
-    //         height: 30,
-    //         child: Text(
-    //           j.toString(),
-    //           style: TextStyle(color: Colors.white, fontSize: 25),
-    //         ),
-    //       ),
-    //     );
-    //     if (j == i && j + 1 <= fct && _ddata[j] == _ddata[j + 1]) {
-    //       _disdata[i].add(
-    //         Container(
-    //           decoration: BoxDecoration(
-    //             border: Border(
-    //               left: BorderSide(color: Colors.red),
-    //               right: BorderSide(color: Colors.red),
-    //               top: BorderSide(color: Colors.red),
-    //             ),
-    //           ), //all(color: Colors.red)),
-    //           width: 100,
-    //           height: 100,
-    //           child: Center(
-    //             child: Text(
-    //               temp,
-    //               style: TextStyle(color: Colors.white, fontSize: 25),
-    //             ),
-    //           ),
-    //         ),
-    //       );
-    //       continue;
-    //     }
-    //     _disdata[i].add(
-    //       Container(
-    //         decoration: BoxDecoration(border: Border.all(color: Colors.red)),
-    //         width: 100,
-    //         height: 100,
-    //         child: Center(
-    //           child: Text(
-    //             temp,
-    //             style: TextStyle(color: Colors.white, fontSize: 25),
-    //           ),
-    //         ),
-    //       ),
-    //     );
-    //   }
-    // }
+    List<int> _Running;
+    _Running = new List<int>.filled(fct+1, -1);
+    for (int i = 0; i < fct; ++i) {
+      if (_ddata[i] == _ddata[i + 1]) {
+        _Running[i] = _ddata[i];
+      }
+    }
+    _disdata.clear();
+    _disdata.add([]);
+    _disNum.clear();
+    _disNum.add([]);
+    for (int i = 1; i <= fct; ++i) {
+      _disdata.add([]);
+      _disNum.add(
+        [
+          Container(
+            height: 30,
+            child: Text(
+              '0',
+              style: TextStyle(color: Colors.white, fontSize: 25),
+            ),
+          ),
+        ],
+      );
+      for (int j = 1; j <= i; ++j) {
+        String temp = 'P' + _ddata[j].toString();
+        if (_ddata[j] == -1) temp = ' ';
+        if (j + 1 <= i && _ddata[j] == _ddata[j + 1]) continue;
+        _disNum[i].add(
+          Container(height: 70),
+        );
+        _disNum[i].add(
+          Container(
+            height: 30,
+            child: Text(
+              j.toString(),
+              style: TextStyle(color: Colors.white, fontSize: 25),
+            ),
+          ),
+        );
+        if (j == i && j + 1 <= fct && _ddata[j] == _ddata[j + 1]) {
+          _disdata[i].add(
+            Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  left: BorderSide(color: Colors.red),
+                  right: BorderSide(color: Colors.red),
+                  top: BorderSide(color: Colors.red),
+                ),
+              ),
+              width: 100,
+              height: 100,
+              child: Center(
+                child: Text(
+                  temp,
+                  style: TextStyle(color: Colors.white, fontSize: 25),
+                ),
+              ),
+            ),
+          );
+          continue;
+        }
+        _disdata[i].add(
+          Container(
+            decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+            width: 100,
+            height: 100,
+            child: Center(
+              child: Text(
+                temp,
+                style: TextStyle(color: Colors.white, fontSize: 25),
+              ),
+            ),
+          ),
+        );
+      }
+    }
     _Na.clear();
     _Re.clear();
     _Ru.clear();
@@ -284,13 +279,22 @@ class _SRTFState extends State<SRTF> {
             tempTe += 'P' + j.toString();
           else
             tempTe += ', P' + j.toString();
-        } 
+        } else if (_Running[i] == j) {
+          tempRu += 'P' + j.toString();
+        } else {
+          if (tempRe.isEmpty)
+            tempRe += 'P' + j.toString();
+          else
+            tempRe += ', P' + j.toString();
+        }
       }
       _Na.add(tempNa);
       _Te.add(tempTe);
+      _Re.add(tempRe);
+      _Ru.add(tempRu);
     }
 
-    view.TakeData('FCFS', _Na, _Re, _Ru, _Te, fct, _disdata, _disNum);
+    view.TakeData('SRTF', _Na, _Re, _Ru, _Te, fct, _disdata, _disNum);
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => view()),
@@ -319,7 +323,10 @@ class _SRTFState extends State<SRTF> {
             children: <Widget>[
               Padding(
                 child: Align(
-                  child: Text('I/O Device',style: TextStyle(color: Colors.white ,fontSize: 20),),
+                  child: Text(
+                    'I/O Device',
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
                   alignment: Alignment.topRight,
                 ),
                 padding: EdgeInsets.only(right: 30),
@@ -427,7 +434,7 @@ class _SRTFState extends State<SRTF> {
                   )
                 ],
               ),
-              Container(height:700),
+              Container(height: 700),
             ],
           ),
         ));

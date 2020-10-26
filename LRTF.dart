@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import './LRTFIOBT.dart';
+import './view.dart';
 
 //LRTF page stateful class
 class LRTF extends StatefulWidget {
@@ -13,6 +16,8 @@ class _LRTFState extends State<LRTF> {
   List<DataRow> _rowList = [];
   List<List<int>> _data = [];
   List<List<String>> _datas = [];
+  List<String> _Na = [], _Re = [], _Ru = [], _Te = [];
+  List<List<Widget>> _disdata = [], _disNum = [];
 
   void _calculate() {
     int cal = 0, st = 0;
@@ -137,6 +142,170 @@ class _LRTFState extends State<LRTF> {
     });
   }
 
+
+
+
+  void _run() {
+    int fct = 0;
+    for (int i = 0; i < _counter; ++i) {
+      fct = max(fct, _data[i][2]);
+    }
+    List<int> _ddata;
+    _ddata = new List<int>.filled(fct + 1, -1);
+
+    int cal = 0, st = 0;
+    List<bool> vis;
+    List<int> val;
+    vis = new List<bool>.filled(_counter, false);
+    val = new List<int>.filled(_counter, 0);
+    for (int i = 0; i < _counter; ++i) val[i] = _data[i][1];
+    while (cal != _counter) {
+      var mx = -1, loc = 0;
+      bool f = true;
+      for (var i = 0; i < _counter; ++i) {
+        if (_data[i][1] > mx && !vis[i] && st >= _data[i][0]) {
+          mx = _data[i][1];
+          loc = i;
+          f = false;
+        }
+      }
+      if (f) {
+        st++;
+        continue;
+      }
+      if (_data[loc][1] > 0) {
+        st++;
+        _ddata[st] = loc;
+        _data[loc][1]--;
+      }
+      if (_data[loc][1] == 0) {
+        vis[loc] = true;
+        cal++;
+      }
+      _data[loc][2] = st;
+      _data[loc][3] = _data[loc][2] - _data[loc][0];
+      _data[loc][4] = _data[loc][3] - val[loc];
+    }
+    for (int i = 0; i < _counter; ++i) _data[i][1] = val[i];
+
+
+    
+    List<int> _Running;
+    _Running = new List<int>.filled(fct + 1, -1);
+    for (int i = 0; i < fct; ++i) {
+      if (_ddata[i] == _ddata[i + 1]) {
+        _Running[i] = _ddata[i];
+      }
+    }
+    _disdata.clear();
+    _disdata.add([]);
+    _disNum.clear();
+    _disNum.add([]);
+    for (int i = 1; i <= fct; ++i) {
+      _disdata.add([]);
+      _disNum.add(
+        [
+          Container(
+            height: 30,
+            child: Text(
+              '0',
+              style: TextStyle(color: Colors.white, fontSize: 25),
+            ),
+          ),
+        ],
+      );
+      for (int j = 1; j <= i; ++j) {
+        String temp = 'P' + _ddata[j].toString();
+        if (_ddata[j] == -1) temp = ' ';
+        if (j + 1 <= i && _ddata[j] == _ddata[j + 1]) continue;
+        _disNum[i].add(
+          Container(height: 70),
+        );
+        _disNum[i].add(
+          Container(
+            height: 30,
+            child: Text(
+              j.toString(),
+              style: TextStyle(color: Colors.white, fontSize: 25),
+            ),
+          ),
+        );
+        if (j == i && j + 1 <= fct && _ddata[j] == _ddata[j + 1]) {
+          _disdata[i].add(
+            Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  left: BorderSide(color: Colors.red),
+                  right: BorderSide(color: Colors.red),
+                  top: BorderSide(color: Colors.red),
+                ),
+              ),
+              width: 100,
+              height: 100,
+              child: Center(
+                child: Text(
+                  temp,
+                  style: TextStyle(color: Colors.white, fontSize: 25),
+                ),
+              ),
+            ),
+          );
+          continue;
+        }
+        _disdata[i].add(
+          Container(
+            decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+            width: 100,
+            height: 100,
+            child: Center(
+              child: Text(
+                temp,
+                style: TextStyle(color: Colors.white, fontSize: 25),
+              ),
+            ),
+          ),
+        );
+      }
+    }
+    _Na.clear();
+    _Re.clear();
+    _Ru.clear();
+    _Te.clear();
+    for (int i = 0; i <= fct; ++i) {
+      String tempNa = '', tempRe = '', tempTe = '', tempRu = '';
+      for (int j = 0; j < _counter; ++j) {
+        if (_data[j][0] > i) {
+          if (tempNa.isEmpty)
+            tempNa += 'P' + j.toString();
+          else
+            tempNa += ', P' + j.toString();
+        } else if (_data[j][2] <= i) {
+          if (tempTe.isEmpty)
+            tempTe += 'P' + j.toString();
+          else
+            tempTe += ', P' + j.toString();
+        } else if (_Running[i] == j) {
+          tempRu += 'P' + j.toString();
+        } else {
+          if (tempRe.isEmpty)
+            tempRe += 'P' + j.toString();
+          else
+            tempRe += ', P' + j.toString();
+        }
+      }
+      _Na.add(tempNa);
+      _Te.add(tempTe);
+      _Re.add(tempRe);
+      _Ru.add(tempRu);
+    }
+
+    view.TakeData('LRTF', _Na, _Re, _Ru, _Te, fct, _disdata, _disNum);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => view()),
+    );
+  }
+
   var f = true;
   @override
   Widget build(BuildContext context) {
@@ -147,7 +316,10 @@ class _LRTFState extends State<LRTF> {
     return Scaffold(
         backgroundColor: Colors.black,
         appBar: AppBar(
-          title: Text('LRTF',style: TextStyle(fontFamily:'Pacifico'),),
+          title: Text(
+            'LRTF',
+            style: TextStyle(fontFamily: 'Pacifico'),
+          ),
           backgroundColor: Colors.red,
         ),
         body: Container(
@@ -156,7 +328,10 @@ class _LRTFState extends State<LRTF> {
             children: <Widget>[
               Padding(
                 child: Align(
-                  child: Text('I/O Device',style: TextStyle(color: Colors.white ,fontSize: 20),),
+                  child: Text(
+                    'I/O Device',
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
                   alignment: Alignment.topRight,
                 ),
                 padding: EdgeInsets.only(right: 30),
@@ -244,7 +419,7 @@ class _LRTFState extends State<LRTF> {
                         'Run',
                         style: TextStyle(color: Colors.white),
                       ),
-                      onPressed: null,
+                      onPressed: _run,
                     )),
                   ),
                   Align(
@@ -264,7 +439,7 @@ class _LRTFState extends State<LRTF> {
                   )
                 ],
               ),
-              Container(height:700),
+              Container(height: 700),
             ],
           ),
         ));
