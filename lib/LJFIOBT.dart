@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import './LJF.dart';
 import './Card.dart';
+import './Viewiobt.dart';
 
 //FCFS page stateful class
 class LJFIOBT extends StatefulWidget {
@@ -20,9 +21,190 @@ class _LJFIOBTState extends State<LJFIOBT> {
   List<List<int>> _cardv = [];
   List<List<String>> _cardvs = [];
   List<List<bool>> _readyq = [];
+  List<String> _Na = [], _Re = [], _Ru = [], _Te = [], _Io = [];
+  List<List<Widget>> _disdata = [], _disNum = [];
 
   void _viz(){
+    int fct = 0;
+    for (int i = 0; i < _counter; ++i) {
+      fct = max(fct, _data[i][4]);
+    }
+    List<int> _ddata;
+    _ddata = new List<int>.filled(fct + 1, -1);
+    List<int> _Running, _IoIn, _IoOut;
+    _Running = new List<int>.filled(fct + 1, -1);
+    _IoIn = new List<int>.filled(_counter, -1);
+    _IoOut = new List<int>.filled(_counter, -1);
 
+    int cal = 0, st = 0;
+    List<int> vis, artime, tbt;
+    vis = new List<int>.filled(_counter, 0);
+    artime = new List<int>.filled(_counter, 0);
+    tbt = new List<int>.filled(_counter, 0);
+    for (int i = 0; i < _counter; ++i) {
+      artime[i] = _data[i][0];
+      tbt[i] = _data[i][1] + _data[i][3];
+    }
+    while (cal != 2 * _counter) {
+      var mx = -1, loc = 0;
+      bool f = true;
+      for (var i = 0; i < _counter; ++i) {
+        if (tbt[i] > mx && (vis[i] == 0 || vis[i] == 1) && st >= _data[i][0]) {
+          mx = tbt[i];
+          loc = i;
+          f = false;
+        }
+      }
+      if (f) {
+        st++;
+        continue;
+      }
+      cal++;
+      if (vis[loc] == 0) {
+        _data[loc][7] = st - _data[loc][0];
+        _data[loc][4] = st + _data[loc][1];
+        for (int i = st + 1; i <= _data[loc][4]; ++i) {
+          _ddata[i] = loc;
+        }
+        st = _data[loc][4];
+        _data[loc][0] = _data[loc][4] + _data[loc][2];
+        _IoIn[loc] = _data[loc][4];
+        _IoOut[loc] = _data[loc][0] - 1;
+        tbt[loc] -= _data[loc][1];
+      }
+      if (vis[loc] == 1) {
+        _data[loc][4] = st + _data[loc][3];
+        for (int i = st + 1; i <= _data[loc][4]; ++i) {
+          _ddata[i] = loc;
+        }
+        st = _data[loc][4];
+        _data[loc][5] = _data[loc][4] - artime[loc];
+        _data[loc][6] = _data[loc][5] - _data[loc][1] - _data[loc][3];
+      }
+      for (int i = 0; i < 8; ++i) _datas[loc][i] = _data[loc][i].toString();
+      vis[loc]++;
+    }
+    for (int i = 0; i < _counter; ++i) _data[i][0] = artime[i];
+
+    for (int i = 0; i < fct; ++i) {
+      if (_ddata[i] == _ddata[i + 1]) {
+        _Running[i] = _ddata[i];
+      }
+    }
+    _disdata.clear();
+    _disdata.add([]);
+    _disNum.clear();
+    _disNum.add([]);
+    for (int i = 1; i <= fct; ++i) {
+      _disdata.add([]);
+      _disNum.add(
+        [
+          Container(
+            height: 30,
+            child: Text(
+              '0',
+              style: TextStyle(color: Colors.white, fontSize: 25),
+            ),
+          ),
+        ],
+      );
+      for (int j = 1; j <= i; ++j) {
+        String temp = 'P' + _ddata[j].toString();
+        if (_ddata[j] == -1) temp = ' ';
+        if (j + 1 <= i && _ddata[j] == _ddata[j + 1]) continue;
+        _disNum[i].add(
+          Container(height: 70),
+        );
+        _disNum[i].add(
+          Container(
+            height: 30,
+            child: Text(
+              j.toString(),
+              style: TextStyle(color: Colors.white, fontSize: 25),
+            ),
+          ),
+        );
+        if (j == i && j + 1 <= fct && _ddata[j] == _ddata[j + 1]) {
+          _disdata[i].add(
+            Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  left: BorderSide(color: Colors.red),
+                  right: BorderSide(color: Colors.red),
+                  top: BorderSide(color: Colors.red),
+                ),
+              ),
+              width: 100,
+              height: 100,
+              child: Center(
+                child: Text(
+                  temp,
+                  style: TextStyle(color: Colors.white, fontSize: 25),
+                ),
+              ),
+            ),
+          );
+          continue;
+        }
+        _disdata[i].add(
+          Container(
+            decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+            width: 100,
+            height: 100,
+            child: Center(
+              child: Text(
+                temp,
+                style: TextStyle(color: Colors.white, fontSize: 25),
+              ),
+            ),
+          ),
+        );
+      }
+    }
+    _Na.clear();
+    _Re.clear();
+    _Ru.clear();
+    _Te.clear();
+    _Io.clear();
+    for (int i = 0; i <= fct; ++i) {
+      String tempNa = '', tempRe = '', tempTe = '', tempRu = '', tempIo = '';
+      for (int j = 0; j < _counter; ++j) {
+        if (_data[j][0] > i) {
+          if (tempNa.isEmpty)
+            tempNa += 'P' + j.toString();
+          else
+            tempNa += ', P' + j.toString();
+        } else if (_data[j][4] <= i) {
+          if (tempTe.isEmpty)
+            tempTe += 'P' + j.toString();
+          else
+            tempTe += ', P' + j.toString();
+        } else if (_Running[i] == j) {
+          tempRu += 'P' + j.toString();
+        } else if (_IoIn[j] <= i && _IoOut[j] >= i) {
+          if (tempIo.isEmpty)
+            tempIo += 'P' + j.toString();
+          else
+            tempIo += ', P' + j.toString();
+        } else {
+          if (tempRe.isEmpty)
+            tempRe += 'P' + j.toString();
+          else
+            tempRe += ', P' + j.toString();
+        }
+      }
+      _Na.add(tempNa);
+      _Te.add(tempTe);
+      _Re.add(tempRe);
+      _Ru.add(tempRu);
+      _Io.add(tempIo);
+    }
+
+    view.TakeData('LJF', _Na, _Re, _Ru, _Io, _Te, fct, _disdata, _disNum);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => view()),
+    );
   }
 
   void _Gant(){
