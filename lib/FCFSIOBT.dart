@@ -453,7 +453,7 @@ class _FCFSIOBTState extends State<FCFSIOBT> {
         ),
         body: Container(
           width: double.infinity,
-          child: Column(
+          child: ListView(
             children: <Widget>[
               Padding(
                 child: Align(
