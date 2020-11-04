@@ -13,6 +13,7 @@ class FCFS extends StatefulWidget {
 
 class _FCFSState extends State<FCFS> {
   var _counter = 0;
+  double _avg_tat=0,_avg_wt=0;
 
   List<DataRow> _rowList = [];
   List<List<int>> _data = [];
@@ -201,6 +202,12 @@ class _FCFSState extends State<FCFS> {
       _data[loc][3] = _data[loc][2] - _data[loc][0];
       _data[loc][4] = _data[loc][3] - _data[loc][1];
       for (int i = 0; i < 5; ++i) _datas[loc][i] = _data[loc][i].toString();
+      int _sum=0;
+      for(int i=0;i<_counter;++i) _sum+= _data[i][3];
+      _avg_tat= _sum / _counter;
+      _sum=0;
+      for(int i=0;i<_counter;++i) _sum+= _data[i][4];
+      _avg_wt= _sum / _counter;
       int t = loc;
       _rowList[loc] = DataRow(cells: <DataCell>[
         DataCell(
@@ -411,6 +418,9 @@ class _FCFSState extends State<FCFS> {
                   ),
                 ],
               ),
+              Padding(
+                padding: EdgeInsets.all(5),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -450,6 +460,39 @@ class _FCFSState extends State<FCFS> {
                       onPressed: _viz,
                     )),
                   ),
+                ],
+              ),
+              Padding(
+                padding: EdgeInsets.all(10),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      border: Border.all(
+                        color: Colors.red
+                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                    ),
+                    padding: EdgeInsets.all(10),
+                    //padding: EdgeInsets.fromLTRB(60, 25, 0, 0),
+                    child: Text('AVg. TAT = '+ _avg_tat.toString() ,style: TextStyle(color: Colors.white)),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      border: Border.all(
+                          color: Colors.red
+                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                    ),
+                    padding: EdgeInsets.all(10),
+                    //padding: EdgeInsets.fromLTRB(100, 25, 0, 0),
+                    child: Text('AVg. WT = '+ _avg_wt.toString() ,style: TextStyle(color: Colors.white)),
+                  ),
+
                 ],
               ),
               Container(height:700),
