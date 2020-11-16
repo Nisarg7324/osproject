@@ -484,7 +484,7 @@ class _SJFState extends State<SJF> {
                     ),
                     padding: EdgeInsets.all(10),
                     //padding: EdgeInsets.fromLTRB(60, 25, 0, 0),
-                    child: Text('AVg. TAT = '+ _avg_tat.toString() ,style: TextStyle(color: Colors.white)),
+                    child: Text('AVg. TAT = '+ _avg_tat.toStringAsFixed(2) ,style: TextStyle(color: Colors.white)),
                   ),
                   Container(
                     decoration: BoxDecoration(
@@ -496,7 +496,7 @@ class _SJFState extends State<SJF> {
                     ),
                     padding: EdgeInsets.all(10),
                     //padding: EdgeInsets.fromLTRB(100, 25, 0, 0),
-                    child: Text('AVg. WT = '+ _avg_wt.toString() ,style: TextStyle(color: Colors.white)),
+                    child: Text('AVg. WT = '+ _avg_wt.toStringAsFixed(2) ,style: TextStyle(color: Colors.white)),
                   ),
 
                 ],
