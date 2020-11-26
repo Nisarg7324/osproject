@@ -1,17 +1,17 @@
 import 'dart:math';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
-import './RRIOBT.dart';
+import 'package:flutter/services.dart';
+import './RR.dart';
 import './Card.dart';
 
-
 //FCFS page stateful class
-class RR extends StatefulWidget {
+class RRIOBT extends StatefulWidget {
   @override
-  _RRState createState() => _RRState();
+  _RRIOBTState createState() => _RRIOBTState();
 }
 
-class _RRState extends State<RR> {
+class _RRIOBTState extends State<RRIOBT> {
   var _counter = 0;
   double _avg_tat=0,_avg_wt=0;
   int TQ = 1;
@@ -22,51 +22,53 @@ class _RRState extends State<RR> {
   List<List<String>> _cardvs = [];
   List<List<bool>> _readyq = [];
 
-  void _Gant() {
+
+  void _Gant(){
 
     _cardv.clear();
     _cardvs.clear();
     _readyq.clear();
 
 
-    List<int> RQ = [],
-        bt,
-        at;
+
+    List<int> RQ = [], bt1,bt2,iobt, at;
     List<bool> inTQP;
-    bt = new List<int>.filled(_counter, 0);
+    bt1 = new List<int>.filled(_counter, 0);
+    bt2 = new List<int>.filled(_counter, 0);
+    iobt = new List<int>.filled(_counter, 0);
     at = new List<int>.filled(_counter, 0);
     for (int i = 0; i < _counter; ++i) {
-      bt[i] = _data[i][1];
+      bt1[i] = _data[i][1];
+      iobt[i]= _data[i][2];
+      bt2[i]=_data[i][3];
       at[i] = _data[i][0];
     }
-    int ttnp = 0,
-        _iofRQ = 0,
-        _st = 0,
-        _tt=-1;
-    inTQP = new List<bool>.filled(_counter, false);
-    while (true) {
+    int ttnp=0,_iofRQ=0,_st=0,_tt=-1;
+    inTQP = new List<bool>.filled(_counter,false);
+    while(true){
 
       bool flag = true;
       for (int i = 0; i < _counter; ++i) {
-        if (_data[i][1] > 0) flag = false;
+        if (_data[i][3] > 0) flag = false;
       }
-
       if (flag) break;
 
 
 
-      for (int i = 0; i < _counter; ++i) {
-        if (_data[i][0] == _st && !inTQP[i] && _data[i][1] > 0) {
+      for(int i=0;i<_counter;++i){
+        if(_data[i][0]==_st && !inTQP[i] && (_data[i][1]>0 || _data[i][3]>0)){
+
           RQ.add(i);
+          //print('here chance');
         }
-        if (_data[i][0] == _st && inTQP[i] && _data[i][1] > 0) {
+        if(_data[i][0]==_st && inTQP[i] && (_data[i][1]>0 || _data[i][3]>0 )){
+          //print('object');
           RQ.add(i);
-          inTQP[i] = !inTQP[i];
+          inTQP[i]=!inTQP[i];
         }
       }
-      if (_st >= ttnp && _iofRQ < RQ.length) {
-        if (_data[RQ[_iofRQ]][1] > 0) {
-
+      if(_st>=ttnp && _iofRQ<RQ.length){
+        if(_data[RQ[_iofRQ]][1]>0){
           _tt++;
           _readyq.add(List.filled(_counter, false));
           _cardv.add([0,0,0,0]);
@@ -75,32 +77,67 @@ class _RRState extends State<RR> {
             _readyq[_tt][RQ[j]]=true;
           }
           _cardv[_tt][0]=RQ[_iofRQ];
-          int temp = min(TQ, _data[RQ[_iofRQ]][1]);
-          _data[RQ[_iofRQ]][0] = _st + TQ + temp;
-          _data[RQ[_iofRQ]][1] -= temp;
           _cardv[_tt][1]=_st;
-          ttnp = _st + temp;
+
+
+          int temp=min(TQ,_data[RQ[_iofRQ]][1]);
+          _data[RQ[_iofRQ]][0]=_st+TQ+temp;
+          _data[RQ[_iofRQ]][1]-=temp;
+          ttnp=_st+temp;
           _cardv[_tt][2]=ttnp;
+          _data[RQ[_iofRQ]][4] = ttnp;
+          inTQP[RQ[_iofRQ]]=!inTQP[RQ[_iofRQ]];
           if(_data[RQ[_iofRQ]][1]==0){
-            _cardv[_tt][3]=1;
+            _data[RQ[_iofRQ]][0]+=_data[RQ[_iofRQ]][2]-TQ;
+            _cardv[_tt][3]=2;
           }
-          _data[RQ[_iofRQ]][2] = ttnp;
-          inTQP[RQ[_iofRQ]] = !inTQP[RQ[_iofRQ]];
-          _data[RQ[_iofRQ]][3] = _data[RQ[_iofRQ]][2] - at[RQ[_iofRQ]];
-          _data[RQ[_iofRQ]][4] = _data[RQ[_iofRQ]][3] - bt[RQ[_iofRQ]];
+
+          _data[RQ[_iofRQ]][5] = _data[RQ[_iofRQ]][4] - at[RQ[_iofRQ]];
+          _data[RQ[_iofRQ]][6] = _data[RQ[_iofRQ]][5] - bt1[RQ[_iofRQ]] - bt2[RQ[_iofRQ]];
           _st++;
           for (int i = 0; i < 4; ++i) _cardvs[_tt][i]=_cardv[_tt][i].toString();
-          //print(_tt);
+        }
+        else if(_data[RQ[_iofRQ]][3]>0){
+          _tt++;
+          _readyq.add(List.filled(_counter, false));
+          _cardv.add([0,0,0,0]);
+          _cardvs.add(['0','0', '0','0']);
+
+          _cardv[_tt][0]=RQ[_iofRQ];
+          _cardv[_tt][1]=_st;
+
+
+          for(int j=_iofRQ+1;j<RQ.length;++j){
+            _readyq[_tt][RQ[j]]=true;
+          }
+          int temp=min(TQ,_data[RQ[_iofRQ]][3]);
+          _data[RQ[_iofRQ]][0]=_st+TQ+temp;
+          _data[RQ[_iofRQ]][3]-=temp;
+          ttnp=_st+temp;
+          _cardv[_tt][2]=ttnp;
+
+          _data[RQ[_iofRQ]][4] = ttnp;
+          inTQP[RQ[_iofRQ]]=!inTQP[RQ[_iofRQ]];
+          if(_data[RQ[_iofRQ]][3]==0){
+
+            _cardv[_tt][3]=1;
+          }
+          _data[RQ[_iofRQ]][5] = _data[RQ[_iofRQ]][4] - at[RQ[_iofRQ]];
+          _data[RQ[_iofRQ]][6] = _data[RQ[_iofRQ]][5] - bt1[RQ[_iofRQ]] - bt2[RQ[_iofRQ]];
+          _st++;
+          for (int i = 0; i < 4; ++i) _cardvs[_tt][i]=_cardv[_tt][i].toString();
         }
         _iofRQ++;
       }
-      else {
+      else{
         _st++;
       }
     }
+
     for (int i = 0; i < _counter; ++i) {
-      _data[i][1] = bt[i];
+      _data[i][1] = bt1[i];
       _data[i][0] = at[i];
+      _data[i][3]= bt2[i];
     }
   }
 
@@ -110,12 +147,16 @@ class _RRState extends State<RR> {
 
   void _calculate() {
 
-    List<int> RQ = [], bt, at;
+    List<int> RQ = [], bt1,bt2,iobt, at;
     List<bool> inTQP;
-    bt = new List<int>.filled(_counter, 0);
+    bt1 = new List<int>.filled(_counter, 0);
+    bt2 = new List<int>.filled(_counter, 0);
+    iobt = new List<int>.filled(_counter, 0);
     at = new List<int>.filled(_counter, 0);
     for (int i = 0; i < _counter; ++i) {
-      bt[i] = _data[i][1];
+      bt1[i] = _data[i][1];
+      iobt[i]= _data[i][2];
+      bt2[i]=_data[i][3];
       at[i] = _data[i][0];
     }
     int ttnp=0,iofRQ=0,st=0;
@@ -124,40 +165,49 @@ class _RRState extends State<RR> {
 
       bool flag = true;
       for (int i = 0; i < _counter; ++i) {
-        if (_data[i][1] > 0) flag = false;
+        if (_data[i][3] > 0) flag = false;
       }
       if (flag) break;
 
 
 
       for(int i=0;i<_counter;++i){
-        if(_data[i][0]==st && !inTQP[i] && _data[i][1]>0){
+        if(_data[i][0]==st && !inTQP[i] && (_data[i][1]>0 || _data[i][3]>0)){
 
           RQ.add(i);
           //print('here chance');
         }
-        if(_data[i][0]==st && inTQP[i] && _data[i][1]>0){
+        if(_data[i][0]==st && inTQP[i] && (_data[i][1]>0 || _data[i][3]>0 )){
           //print('object');
           RQ.add(i);
           inTQP[i]=!inTQP[i];
         }
       }
-      //print(st);
-      //print(RQ);
-      //print('----');
       if(st>=ttnp && iofRQ<RQ.length){
-        //print('st');
-        //print(st);
         if(_data[RQ[iofRQ]][1]>0){
-
           int temp=min(TQ,_data[RQ[iofRQ]][1]);
           _data[RQ[iofRQ]][0]=st+TQ+temp;
           _data[RQ[iofRQ]][1]-=temp;
           ttnp=st+temp;
-          _data[RQ[iofRQ]][2] = ttnp;
+          _data[RQ[iofRQ]][4] = ttnp;
           inTQP[RQ[iofRQ]]=!inTQP[RQ[iofRQ]];
-          _data[RQ[iofRQ]][3] = _data[RQ[iofRQ]][2] - at[RQ[iofRQ]];
-          _data[RQ[iofRQ]][4] = _data[RQ[iofRQ]][3] - bt[RQ[iofRQ]];
+
+          _data[RQ[iofRQ]][5] = _data[RQ[iofRQ]][4] - at[RQ[iofRQ]];
+          _data[RQ[iofRQ]][6] = _data[RQ[iofRQ]][5] - bt1[RQ[iofRQ]] - bt2[RQ[iofRQ]];
+          if(_data[RQ[iofRQ]][1]==0){
+            _data[RQ[iofRQ]][0]+=_data[RQ[iofRQ]][2]-TQ;
+          }
+          st++;
+        }
+        else if(_data[RQ[iofRQ]][3]>0){
+          int temp=min(TQ,_data[RQ[iofRQ]][3]);
+          _data[RQ[iofRQ]][0]=st+TQ+temp;
+          _data[RQ[iofRQ]][3]-=temp;
+          ttnp=st+temp;
+          _data[RQ[iofRQ]][4] = ttnp;
+          inTQP[RQ[iofRQ]]=!inTQP[RQ[iofRQ]];
+          _data[RQ[iofRQ]][5] = _data[RQ[iofRQ]][4] - at[RQ[iofRQ]];
+          _data[RQ[iofRQ]][6] = _data[RQ[iofRQ]][5] - bt1[RQ[iofRQ]] - bt2[RQ[iofRQ]];
           st++;
         }
         iofRQ++;
@@ -174,6 +224,10 @@ class _RRState extends State<RR> {
         DataCell(
             Text('P' + t.toString(), style: TextStyle(color: Colors.white))),
         DataCell(TextField(
+          //expands: true,
+          inputFormatters: [
+            LengthLimitingTextInputFormatter(2),
+          ],
           maxLines: 1,
           textAlign: TextAlign.center,
           keyboardType: TextInputType.number,
@@ -199,14 +253,45 @@ class _RRState extends State<RR> {
             });
           },
         )),
-        DataCell(Text(_datas[t][2], style: TextStyle(color: Colors.white))),
-        DataCell(Text(_datas[t][3], style: TextStyle(color: Colors.white))),
+        DataCell(TextField(
+          maxLines: 1,
+          //       inputFormatters:[
+          //   LengthLimitingTextInputFormatter(2),
+          // ],
+          textAlign: TextAlign.center,
+          keyboardType: TextInputType.number,
+          style: TextStyle(color: Colors.white),
+          onChanged: (val) {
+            setState(() {
+              _datas[t][2] = val;
+              _data[t][2] = int.parse(val);
+              _calculate();
+            });
+          },
+        )),
+        DataCell(TextField(
+          maxLines: 1,
+          textAlign: TextAlign.center,
+          keyboardType: TextInputType.number,
+          style: TextStyle(color: Colors.white),
+          onChanged: (val) {
+            setState(() {
+              _datas[t][3] = val;
+              _data[t][3] = int.parse(val);
+              _calculate();
+            });
+          },
+        )),
         DataCell(Text(_datas[t][4], style: TextStyle(color: Colors.white))),
+        DataCell(Text(_datas[t][5], style: TextStyle(color: Colors.white))),
+        DataCell(Text(_datas[t][6], style: TextStyle(color: Colors.white))),
+        DataCell(Text(_datas[t][7], style: TextStyle(color: Colors.white))),
       ]);
     }
     for (int i = 0; i < _counter; ++i) {
-      _data[i][1] = bt[i];
+      _data[i][1] = bt1[i];
       _data[i][0] = at[i];
+      _data[i][3]= bt2[i];
     }
   }
 
@@ -214,8 +299,8 @@ class _RRState extends State<RR> {
     setState(() {
       var t = _counter;
       _counter++;
-      _data.add([0, 0, 0, 0, 0]);
-      _datas.add(['0', '0', '0', '0', '0']);
+      _data.add([0, 0, 0, 0, 0, 0, 0, 0]);
+      _datas.add(['0', '0', '0', '0', '0', '0', '0', '0']);
       _rowList.add(DataRow(cells: <DataCell>[
         DataCell(Text('P' + (_counter - 1).toString(),
             style: TextStyle(color: Colors.white))),
@@ -245,9 +330,36 @@ class _RRState extends State<RR> {
             });
           },
         )),
-        DataCell(Text(_datas[t][2], style: TextStyle(color: Colors.white))),
-        DataCell(Text(_datas[t][3], style: TextStyle(color: Colors.white))),
+        DataCell(TextField(
+          maxLines: 1,
+          textAlign: TextAlign.center,
+          keyboardType: TextInputType.number,
+          style: TextStyle(color: Colors.white),
+          onChanged: (val) {
+            _datas[t][2] = val;
+            _data[t][2] = int.parse(val);
+            setState(() {
+              _calculate();
+            });
+          },
+        )),
+        DataCell(TextField(
+          maxLines: 1,
+          textAlign: TextAlign.center,
+          keyboardType: TextInputType.number,
+          style: TextStyle(color: Colors.white),
+          onChanged: (val) {
+            _datas[t][3] = val;
+            _data[t][3] = int.parse(val);
+            setState(() {
+              _calculate();
+            });
+          },
+        )),
         DataCell(Text(_datas[t][4], style: TextStyle(color: Colors.white))),
+        DataCell(Text(_datas[t][5], style: TextStyle(color: Colors.white))),
+        DataCell(Text(_datas[t][6], style: TextStyle(color: Colors.white))),
+        DataCell(Text(_datas[t][7], style: TextStyle(color: Colors.white))),
       ]));
     });
   }
@@ -262,12 +374,12 @@ class _RRState extends State<RR> {
     });
   }
 
-  var fo = true;
+  var f = true;
   @override
   Widget build(BuildContext context) {
-    if (fo) {
+    if (f) {
       _addrow();
-      fo = false;
+      f = false;
     }
     return Scaffold(
         backgroundColor: Colors.black,
@@ -308,8 +420,8 @@ class _RRState extends State<RR> {
                                       maxLines: 1,
                                       decoration: InputDecoration(
                                         enabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                                          borderSide: BorderSide(color: Colors.red)
+                                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                                            borderSide: BorderSide(color: Colors.red)
                                         ),
                                         focusedBorder: OutlineInputBorder(
                                             borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -355,13 +467,12 @@ class _RRState extends State<RR> {
                               Row(
                                 children: <Widget>[
                                   Switch(
-                                      value: false,
+                                      value: true,
                                       onChanged: (t) {
                                         Navigator.pop(context);
-                                        // Navigator.of(context).push(FCFSIOBT());
                                         Navigator.push(
                                           context,
-                                          MaterialPageRoute(builder: (context) => RRIOBT()),
+                                          MaterialPageRoute(builder: (context) => RR()),
                                         );
                                       }),
                                 ],
@@ -377,8 +488,6 @@ class _RRState extends State<RR> {
                   ],
                 ),
               ),
-
-
               Container(
                 child: SingleChildScrollView(
                   scrollDirection: Axis.vertical,
@@ -399,6 +508,14 @@ class _RRState extends State<RR> {
                                 style: TextStyle(color: Colors.white)),
                             numeric: true),
                         DataColumn(
+                            label: Text('I/O BT',
+                                style: TextStyle(color: Colors.white)),
+                            numeric: true),
+                        DataColumn(
+                            label: Text('BT',
+                                style: TextStyle(color: Colors.white)),
+                            numeric: true),
+                        DataColumn(
                             label: Text('CT',
                                 style: TextStyle(color: Colors.white)),
                             numeric: true),
@@ -410,13 +527,16 @@ class _RRState extends State<RR> {
                             label: Text('WT',
                                 style: TextStyle(color: Colors.white)),
                             numeric: true),
+                        DataColumn(
+                            label: Text('RT',
+                                style: TextStyle(color: Colors.white)),
+                            numeric: true),
                       ],
                       rows: _rowList,
                     ),
                   ),
                 ),
               ),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
