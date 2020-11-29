@@ -76,7 +76,7 @@ class _RRState extends State<RR> {
           }
           _cardv[_tt][0]=RQ[_iofRQ];
           int temp = min(TQ, _data[RQ[_iofRQ]][1]);
-          _data[RQ[_iofRQ]][0] = _st + TQ + temp;
+          _data[RQ[_iofRQ]][0] = _st + temp;
           _data[RQ[_iofRQ]][1] -= temp;
           _cardv[_tt][1]=_st;
           ttnp = _st + temp;
@@ -151,7 +151,7 @@ class _RRState extends State<RR> {
         if(_data[RQ[iofRQ]][1]>0){
 
           int temp=min(TQ,_data[RQ[iofRQ]][1]);
-          _data[RQ[iofRQ]][0]=st+TQ+temp;
+          _data[RQ[iofRQ]][0]=st+temp;
           _data[RQ[iofRQ]][1]-=temp;
           ttnp=st+temp;
           _data[RQ[iofRQ]][2] = ttnp;
@@ -166,7 +166,12 @@ class _RRState extends State<RR> {
         st++;
       }
     }
-
+    int _sum=0;
+    for(int i=0;i<_counter;++i) _sum+= _data[i][3];
+    _avg_tat= _sum / _counter;
+    _sum=0;
+    for(int i=0;i<_counter;++i) _sum+= _data[i][4];
+    _avg_wt= _sum / _counter;
     for (int loc = 0; loc < _counter; ++loc) {
       for (int i = 0; i < 5; ++i) _datas[loc][i] = _data[loc][i].toString();
       int t = loc;

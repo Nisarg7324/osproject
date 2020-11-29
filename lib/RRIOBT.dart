@@ -111,7 +111,7 @@ class _RRIOBTState extends State<RRIOBT> {
             _readyq[_tt][RQ[j]]=true;
           }
           int temp=min(TQ,_data[RQ[_iofRQ]][3]);
-          _data[RQ[_iofRQ]][0]=_st+TQ+temp;
+          _data[RQ[_iofRQ]][0]=_st+temp;
           _data[RQ[_iofRQ]][3]-=temp;
           ttnp=_st+temp;
           _cardv[_tt][2]=ttnp;
@@ -159,7 +159,7 @@ class _RRIOBTState extends State<RRIOBT> {
       bt2[i]=_data[i][3];
       at[i] = _data[i][0];
     }
-    int ttnp=0,iofRQ=0,st=0;
+    int ttnp=0,_iofRQ=0,st=0;
     inTQP = new List<bool>.filled(_counter,false);
     while(true){
 
@@ -183,40 +183,45 @@ class _RRIOBTState extends State<RRIOBT> {
           inTQP[i]=!inTQP[i];
         }
       }
-      if(st>=ttnp && iofRQ<RQ.length){
-        if(_data[RQ[iofRQ]][1]>0){
-          int temp=min(TQ,_data[RQ[iofRQ]][1]);
-          _data[RQ[iofRQ]][0]=st+TQ+temp;
-          _data[RQ[iofRQ]][1]-=temp;
+      if(st>=ttnp && _iofRQ<RQ.length){
+        if(_data[RQ[_iofRQ]][1]>0){
+          int temp=min(TQ,_data[RQ[_iofRQ]][1]);
+          _data[RQ[_iofRQ]][0]=st+temp;
+          _data[RQ[_iofRQ]][1]-=temp;
           ttnp=st+temp;
-          _data[RQ[iofRQ]][4] = ttnp;
-          inTQP[RQ[iofRQ]]=!inTQP[RQ[iofRQ]];
+          _data[RQ[_iofRQ]][4] = ttnp;
+          inTQP[RQ[_iofRQ]]=!inTQP[RQ[_iofRQ]];
 
-          _data[RQ[iofRQ]][5] = _data[RQ[iofRQ]][4] - at[RQ[iofRQ]];
-          _data[RQ[iofRQ]][6] = _data[RQ[iofRQ]][5] - bt1[RQ[iofRQ]] - bt2[RQ[iofRQ]];
-          if(_data[RQ[iofRQ]][1]==0){
-            _data[RQ[iofRQ]][0]+=_data[RQ[iofRQ]][2]-TQ;
+          _data[RQ[_iofRQ]][5] = _data[RQ[_iofRQ]][4] - at[RQ[_iofRQ]];
+          _data[RQ[_iofRQ]][6] = _data[RQ[_iofRQ]][5] - bt1[RQ[_iofRQ]] - bt2[RQ[_iofRQ]];
+          if(_data[RQ[_iofRQ]][1]==0){
+            _data[RQ[_iofRQ]][0]+=_data[RQ[_iofRQ]][2]-TQ;
           }
           st++;
         }
-        else if(_data[RQ[iofRQ]][3]>0){
-          int temp=min(TQ,_data[RQ[iofRQ]][3]);
-          _data[RQ[iofRQ]][0]=st+TQ+temp;
-          _data[RQ[iofRQ]][3]-=temp;
+        else if(_data[RQ[_iofRQ]][3]>0){
+          int temp=min(TQ,_data[RQ[_iofRQ]][3]);
+          _data[RQ[_iofRQ]][0]=st+temp;
+          _data[RQ[_iofRQ]][3]-=temp;
           ttnp=st+temp;
-          _data[RQ[iofRQ]][4] = ttnp;
-          inTQP[RQ[iofRQ]]=!inTQP[RQ[iofRQ]];
-          _data[RQ[iofRQ]][5] = _data[RQ[iofRQ]][4] - at[RQ[iofRQ]];
-          _data[RQ[iofRQ]][6] = _data[RQ[iofRQ]][5] - bt1[RQ[iofRQ]] - bt2[RQ[iofRQ]];
+          _data[RQ[_iofRQ]][4] = ttnp;
+          inTQP[RQ[_iofRQ]]=!inTQP[RQ[_iofRQ]];
+          _data[RQ[_iofRQ]][5] = _data[RQ[_iofRQ]][4] - at[RQ[_iofRQ]];
+          _data[RQ[_iofRQ]][6] = _data[RQ[_iofRQ]][5] - bt1[RQ[_iofRQ]] - bt2[RQ[_iofRQ]];
           st++;
         }
-        iofRQ++;
+        _iofRQ++;
       }
       else{
         st++;
       }
     }
-
+    int _sum=0;
+    for(int i=0;i<_counter;++i) _sum+= _data[i][5];
+    _avg_tat= _sum / _counter;
+    _sum=0;
+    for(int i=0;i<_counter;++i) _sum+= _data[i][6];
+    _avg_wt= _sum / _counter;
     for (int loc = 0; loc < _counter; ++loc) {
       for (int i = 0; i < 5; ++i) _datas[loc][i] = _data[loc][i].toString();
       int t = loc;
