@@ -148,7 +148,7 @@ class _RRIOBTState extends State<RRIOBT> {
   void _calculate() {
 
     List<int> RQ = [], bt1,bt2,iobt, at;
-    List<bool> inTQP;
+    List<bool> inTQP,vis;
     bt1 = new List<int>.filled(_counter, 0);
     bt2 = new List<int>.filled(_counter, 0);
     iobt = new List<int>.filled(_counter, 0);
@@ -161,6 +161,7 @@ class _RRIOBTState extends State<RRIOBT> {
     }
     int ttnp=0,_iofRQ=0,st=0;
     inTQP = new List<bool>.filled(_counter,false);
+    vis = new List<bool>.filled(_counter,false);
     while(true){
 
       bool flag = true;
@@ -185,6 +186,10 @@ class _RRIOBTState extends State<RRIOBT> {
       }
       if(st>=ttnp && _iofRQ<RQ.length){
         if(_data[RQ[_iofRQ]][1]>0){
+          if(!vis[RQ[_iofRQ]]){
+            _data[RQ[_iofRQ]][7]=st-at[RQ[_iofRQ]];
+            vis[RQ[_iofRQ]]=true;
+          }
           int temp=min(TQ,_data[RQ[_iofRQ]][1]);
           _data[RQ[_iofRQ]][0]=st+temp;
           _data[RQ[_iofRQ]][1]-=temp;
@@ -200,6 +205,10 @@ class _RRIOBTState extends State<RRIOBT> {
           st++;
         }
         else if(_data[RQ[_iofRQ]][3]>0){
+          if(!vis[RQ[_iofRQ]]){
+            _data[RQ[_iofRQ]][7]=st-at[RQ[_iofRQ]];
+            vis[RQ[_iofRQ]]=true;
+          }
           int temp=min(TQ,_data[RQ[_iofRQ]][3]);
           _data[RQ[_iofRQ]][0]=st+temp;
           _data[RQ[_iofRQ]][3]-=temp;
@@ -223,7 +232,7 @@ class _RRIOBTState extends State<RRIOBT> {
     for(int i=0;i<_counter;++i) _sum+= _data[i][6];
     _avg_wt= _sum / _counter;
     for (int loc = 0; loc < _counter; ++loc) {
-      for (int i = 0; i < 5; ++i) _datas[loc][i] = _data[loc][i].toString();
+      for (int i = 0; i < 8; ++i) _datas[loc][i] = _data[loc][i].toString();
       int t = loc;
       _rowList[loc] = DataRow(cells: <DataCell>[
         DataCell(
