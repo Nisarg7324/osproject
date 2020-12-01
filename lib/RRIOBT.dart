@@ -211,7 +211,9 @@ class _RRIOBTState extends State<RRIOBT> {
           _data[RQ[_iofRQ]][5] = _data[RQ[_iofRQ]][4] - at[RQ[_iofRQ]];
           _data[RQ[_iofRQ]][6] = _data[RQ[_iofRQ]][5] - bt1[RQ[_iofRQ]] - bt2[RQ[_iofRQ]];
           if(_data[RQ[_iofRQ]][1]==0){
+            _IoIn[RQ[_iofRQ]]=_data[RQ[_iofRQ]][0];
             _data[RQ[_iofRQ]][0]+=_data[RQ[_iofRQ]][2];
+            _IoOut[RQ[_iofRQ]]=_data[RQ[_iofRQ]][0];
           }
           st++;
         }
