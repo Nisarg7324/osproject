@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import './RR.dart';
 import './Card.dart';
+import './Viewiobt.dart';
 
 //FCFS page stateful class
 class RRIOBT extends StatefulWidget {
@@ -21,6 +22,8 @@ class _RRIOBTState extends State<RRIOBT> {
   List<List<int>> _cardv = [];
   List<List<String>> _cardvs = [];
   List<List<bool>> _readyq = [];
+  List<String> _Na = [], _Re = [], _Ru = [], _Te = [], _Io = [];
+  List<List<Widget>> _disdata = [], _disNum = [];
 
 
   void _Gant(){
@@ -88,7 +91,7 @@ class _RRIOBTState extends State<RRIOBT> {
           _data[RQ[_iofRQ]][4] = ttnp;
           inTQP[RQ[_iofRQ]]=!inTQP[RQ[_iofRQ]];
           if(_data[RQ[_iofRQ]][1]==0){
-            _data[RQ[_iofRQ]][0]+=_data[RQ[_iofRQ]][2]-TQ;
+            _data[RQ[_iofRQ]][0]+=_data[RQ[_iofRQ]][2];
             _cardv[_tt][3]=2;
           }
 
@@ -142,7 +145,224 @@ class _RRIOBTState extends State<RRIOBT> {
   }
 
   void _viz(){
+    int fct = 0;
+    for (int i = 0; i < _counter; ++i) {
+      fct = max(fct, _data[i][4]);
+    }
+    List<int> _ddata;
+    _ddata = new List<int>.filled(fct + 1, -1);
+    List<int> _Running, _IoIn, _IoOut;
+    _Running = new List<int>.filled(fct + 1, -1);
+    _IoIn = new List<int>.filled(_counter, -1);
+    _IoOut = new List<int>.filled(_counter, -1);
 
+    List<int> RQ = [], bt1,bt2,iobt, at;
+    List<bool> inTQP,vis;
+    bt1 = new List<int>.filled(_counter, 0);
+    bt2 = new List<int>.filled(_counter, 0);
+    iobt = new List<int>.filled(_counter, 0);
+    at = new List<int>.filled(_counter, 0);
+    for (int i = 0; i < _counter; ++i) {
+      bt1[i] = _data[i][1];
+      iobt[i]= _data[i][2];
+      bt2[i]=_data[i][3];
+      at[i] = _data[i][0];
+    }
+    int ttnp=0,_iofRQ=0,st=0;
+    inTQP = new List<bool>.filled(_counter,false);
+    vis = new List<bool>.filled(_counter,false);
+    while(true){
+
+      bool flag = true;
+      for (int i = 0; i < _counter; ++i) {
+        if (_data[i][3] > 0) flag = false;
+      }
+      if (flag) break;
+
+
+
+      for(int i=0;i<_counter;++i){
+        if(_data[i][0]==st && !inTQP[i] && (_data[i][1]>0 || _data[i][3]>0)){
+
+          RQ.add(i);
+          //print('here chance');
+        }
+        if(_data[i][0]==st && inTQP[i] && (_data[i][1]>0 || _data[i][3]>0 )){
+          //print('object');
+          RQ.add(i);
+          inTQP[i]=!inTQP[i];
+        }
+      }
+      if(st>=ttnp && _iofRQ<RQ.length){
+        if(_data[RQ[_iofRQ]][1]>0){
+          if(!vis[RQ[_iofRQ]]){
+            _data[RQ[_iofRQ]][7]=st-at[RQ[_iofRQ]];
+            vis[RQ[_iofRQ]]=true;
+          }
+          int temp=min(TQ,_data[RQ[_iofRQ]][1]);
+          _data[RQ[_iofRQ]][0]=st+temp;
+          for(int i=st+1;i<=st+temp;++i)
+          _ddata[i]=RQ[_iofRQ];
+          _data[RQ[_iofRQ]][1]-=temp;
+          ttnp=st+temp;
+          _data[RQ[_iofRQ]][4] = ttnp;
+          inTQP[RQ[_iofRQ]]=!inTQP[RQ[_iofRQ]];
+
+          _data[RQ[_iofRQ]][5] = _data[RQ[_iofRQ]][4] - at[RQ[_iofRQ]];
+          _data[RQ[_iofRQ]][6] = _data[RQ[_iofRQ]][5] - bt1[RQ[_iofRQ]] - bt2[RQ[_iofRQ]];
+          if(_data[RQ[_iofRQ]][1]==0){
+            _data[RQ[_iofRQ]][0]+=_data[RQ[_iofRQ]][2];
+          }
+          st++;
+        }
+        else if(_data[RQ[_iofRQ]][3]>0){
+          if(!vis[RQ[_iofRQ]]){
+            _data[RQ[_iofRQ]][7]=st-at[RQ[_iofRQ]];
+            vis[RQ[_iofRQ]]=true;
+          }
+          int temp=min(TQ,_data[RQ[_iofRQ]][3]);
+          _data[RQ[_iofRQ]][0]=st+temp;
+          for(int i=st+1;i<=st+temp;++i)
+          _ddata[i]=RQ[_iofRQ];
+          _data[RQ[_iofRQ]][3]-=temp;
+          ttnp=st+temp;
+          _data[RQ[_iofRQ]][4] = ttnp;
+          inTQP[RQ[_iofRQ]]=!inTQP[RQ[_iofRQ]];
+          _data[RQ[_iofRQ]][5] = _data[RQ[_iofRQ]][4] - at[RQ[_iofRQ]];
+          _data[RQ[_iofRQ]][6] = _data[RQ[_iofRQ]][5] - bt1[RQ[_iofRQ]] - bt2[RQ[_iofRQ]];
+          st++;
+        }
+        _iofRQ++;
+      }
+      else{
+        st++;
+      }
+    }
+    for (int i = 0; i < _counter; ++i) {
+      _data[i][1] = bt1[i];
+      _data[i][0] = at[i];
+      _data[i][3]= bt2[i];
+    }
+    //end
+    for (int i = 0; i < fct; ++i) {
+      if (_ddata[i] == _ddata[i + 1]) {
+        _Running[i] = _ddata[i];
+      }
+    }
+    _disdata.clear();
+    _disdata.add([]);
+    _disNum.clear();
+    _disNum.add([]);
+    for (int i = 1; i <= fct; ++i) {
+      _disdata.add([]);
+      _disNum.add(
+        [
+          Container(
+            height: 30,
+            child: Text(
+              '0',
+              style: TextStyle(color: Colors.white, fontSize: 25),
+            ),
+          ),
+        ],
+      );
+      for (int j = 1; j <= i; ++j) {
+        String temp = 'P' + _ddata[j].toString();
+        if (_ddata[j] == -1) temp = ' ';
+        if (j + 1 <= i && _ddata[j] == _ddata[j + 1]) continue;
+        _disNum[i].add(
+          Container(height: 70),
+        );
+        _disNum[i].add(
+          Container(
+            height: 30,
+            child: Text(
+              j.toString(),
+              style: TextStyle(color: Colors.white, fontSize: 25),
+            ),
+          ),
+        );
+        if (j == i && j + 1 <= fct && _ddata[j] == _ddata[j + 1]) {
+          _disdata[i].add(
+            Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  left: BorderSide(color: Colors.red),
+                  right: BorderSide(color: Colors.red),
+                  top: BorderSide(color: Colors.red),
+                ),
+              ),
+              width: 100,
+              height: 100,
+              child: Center(
+                child: Text(
+                  temp,
+                  style: TextStyle(color: Colors.white, fontSize: 25),
+                ),
+              ),
+            ),
+          );
+          continue;
+        }
+        _disdata[i].add(
+          Container(
+            decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+            width: 100,
+            height: 100,
+            child: Center(
+              child: Text(
+                temp,
+                style: TextStyle(color: Colors.white, fontSize: 25),
+              ),
+            ),
+          ),
+        );
+      }
+    }
+    _Na.clear();
+    _Re.clear();
+    _Ru.clear();
+    _Te.clear();
+    _Io.clear();
+    for (int i = 0; i <= fct; ++i) {
+      String tempNa = '', tempRe = '', tempTe = '', tempRu = '', tempIo = '';
+      for (int j = 0; j < _counter; ++j) {
+        if (_data[j][0] > i) {
+          if (tempNa.isEmpty)
+            tempNa += 'P' + j.toString();
+          else
+            tempNa += ', P' + j.toString();
+        } else if (_data[j][4] <= i) {
+          if (tempTe.isEmpty)
+            tempTe += 'P' + j.toString();
+          else
+            tempTe += ', P' + j.toString();
+        } else if (_Running[i] == j) {
+          tempRu += 'P' + j.toString();
+        } else if (_IoIn[j] <= i && _IoOut[j] >= i) {
+          if (tempIo.isEmpty)
+            tempIo += 'P' + j.toString();
+          else
+            tempIo += ', P' + j.toString();
+        } else {
+          if (tempRe.isEmpty)
+            tempRe += 'P' + j.toString();
+          else
+            tempRe += ', P' + j.toString();
+        }
+      }
+      _Na.add(tempNa);
+      _Te.add(tempTe);
+      _Re.add(tempRe);
+      _Ru.add(tempRu);
+      _Io.add(tempIo);
+    }
+
+    view.TakeData('RR', _Na, _Re, _Ru, _Io, _Te, fct, _disdata, _disNum);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => view()),
+    );
   }
 
   void _calculate() {
@@ -200,7 +420,7 @@ class _RRIOBTState extends State<RRIOBT> {
           _data[RQ[_iofRQ]][5] = _data[RQ[_iofRQ]][4] - at[RQ[_iofRQ]];
           _data[RQ[_iofRQ]][6] = _data[RQ[_iofRQ]][5] - bt1[RQ[_iofRQ]] - bt2[RQ[_iofRQ]];
           if(_data[RQ[_iofRQ]][1]==0){
-            _data[RQ[_iofRQ]][0]+=_data[RQ[_iofRQ]][2]-TQ;
+            _data[RQ[_iofRQ]][0]+=_data[RQ[_iofRQ]][2];
           }
           st++;
         }
