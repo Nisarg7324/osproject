@@ -434,6 +434,7 @@ class _LRTFIOBTState extends State<LRTFIOBT> {
       tbt[i] = _data[i][1] + _data[i][3];
       bt1[i] = _data[i][1];
       bt2[i] = _data[i][3];
+      _data[i][7]=100;
     }
     while (cal != 2 * _counter) {
       var mx = -1, loc = 0;

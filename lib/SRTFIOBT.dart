@@ -429,6 +429,7 @@ class _SRTFIOBTState extends State<SRTFIOBT> {
       tbt[i] = _data[i][1] + _data[i][3];
       bt1[i] = _data[i][1];
       bt2[i] = _data[i][3];
+      _data[i][7]=100;
     }
     while (cal != 2 * _counter) {
       var mn = 100, loc = 0;
