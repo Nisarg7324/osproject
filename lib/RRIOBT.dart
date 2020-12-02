@@ -14,7 +14,7 @@ class RRIOBT extends StatefulWidget {
 
 class _RRIOBTState extends State<RRIOBT> {
   var _counter = 0;
-  double _avg_tat=0,_avg_wt=0;
+  double _avg_tat = 0, _avg_wt = 0;
   int TQ = 1;
   List<DataRow> _rowList = [];
   List<List<int>> _data = [];
@@ -25,16 +25,12 @@ class _RRIOBTState extends State<RRIOBT> {
   List<String> _Na = [], _Re = [], _Ru = [], _Te = [], _Io = [];
   List<List<Widget>> _disdata = [], _disNum = [];
 
-
-  void _Gant(){
-
+  void _Gant() {
     _cardv.clear();
     _cardvs.clear();
     _readyq.clear();
 
-
-
-    List<int> RQ = [], bt1,bt2,iobt, at;
+    List<int> RQ = [], bt1, bt2, iobt, at;
     List<bool> inTQP;
     bt1 = new List<int>.filled(_counter, 0);
     bt2 = new List<int>.filled(_counter, 0);
@@ -42,97 +38,96 @@ class _RRIOBTState extends State<RRIOBT> {
     at = new List<int>.filled(_counter, 0);
     for (int i = 0; i < _counter; ++i) {
       bt1[i] = _data[i][1];
-      iobt[i]= _data[i][2];
-      bt2[i]=_data[i][3];
+      iobt[i] = _data[i][2];
+      bt2[i] = _data[i][3];
       at[i] = _data[i][0];
     }
-    int ttnp=0,_iofRQ=0,_st=0,_tt=-1;
-    inTQP = new List<bool>.filled(_counter,false);
-    while(true){
-
+    int ttnp = 0, _iofRQ = 0, _st = 0, _tt = -1;
+    inTQP = new List<bool>.filled(_counter, false);
+    while (true) {
       bool flag = true;
       for (int i = 0; i < _counter; ++i) {
         if (_data[i][3] > 0) flag = false;
       }
       if (flag) break;
 
-
-
-      for(int i=0;i<_counter;++i){
-        if(_data[i][0]==_st && !inTQP[i] && (_data[i][1]>0 || _data[i][3]>0)){
-
+      for (int i = 0; i < _counter; ++i) {
+        if (_data[i][0] == _st &&
+            !inTQP[i] &&
+            (_data[i][1] > 0 || _data[i][3] > 0)) {
           RQ.add(i);
           //print('here chance');
         }
-        if(_data[i][0]==_st && inTQP[i] && (_data[i][1]>0 || _data[i][3]>0 )){
+        if (_data[i][0] == _st &&
+            inTQP[i] &&
+            (_data[i][1] > 0 || _data[i][3] > 0)) {
           //print('object');
           RQ.add(i);
-          inTQP[i]=!inTQP[i];
+          inTQP[i] = !inTQP[i];
         }
       }
-      if(_st>=ttnp && _iofRQ<RQ.length){
-        if(_data[RQ[_iofRQ]][1]>0){
+      if (_st >= ttnp && _iofRQ < RQ.length) {
+        if (_data[RQ[_iofRQ]][1] > 0) {
           _tt++;
           _readyq.add(List.filled(_counter, false));
-          _cardv.add([0,0,0,0]);
-          _cardvs.add(['0','0', '0','0']);
-          for(int j=_iofRQ+1;j<RQ.length;++j){
-            _readyq[_tt][RQ[j]]=true;
+          _cardv.add([0, 0, 0, 0]);
+          _cardvs.add(['0', '0', '0', '0']);
+          for (int j = _iofRQ + 1; j < RQ.length; ++j) {
+            _readyq[_tt][RQ[j]] = true;
           }
-          _cardv[_tt][0]=RQ[_iofRQ];
-          _cardv[_tt][1]=_st;
+          _cardv[_tt][0] = RQ[_iofRQ];
+          _cardv[_tt][1] = _st;
 
-
-          int temp=min(TQ,_data[RQ[_iofRQ]][1]);
-          _data[RQ[_iofRQ]][0]=_st+TQ+temp;
-          _data[RQ[_iofRQ]][1]-=temp;
-          ttnp=_st+temp;
-          _cardv[_tt][2]=ttnp;
+          int temp = min(TQ, _data[RQ[_iofRQ]][1]);
+          _data[RQ[_iofRQ]][0] = _st + TQ + temp;
+          _data[RQ[_iofRQ]][1] -= temp;
+          ttnp = _st + temp;
+          _cardv[_tt][2] = ttnp;
           _data[RQ[_iofRQ]][4] = ttnp;
-          inTQP[RQ[_iofRQ]]=!inTQP[RQ[_iofRQ]];
-          if(_data[RQ[_iofRQ]][1]==0){
-            _data[RQ[_iofRQ]][0]+=_data[RQ[_iofRQ]][2];
-            _cardv[_tt][3]=2;
+          inTQP[RQ[_iofRQ]] = !inTQP[RQ[_iofRQ]];
+          if (_data[RQ[_iofRQ]][1] == 0) {
+            _data[RQ[_iofRQ]][0] += _data[RQ[_iofRQ]][2];
+            _cardv[_tt][3] = 2;
           }
 
           _data[RQ[_iofRQ]][5] = _data[RQ[_iofRQ]][4] - at[RQ[_iofRQ]];
-          _data[RQ[_iofRQ]][6] = _data[RQ[_iofRQ]][5] - bt1[RQ[_iofRQ]] - bt2[RQ[_iofRQ]];
+          _data[RQ[_iofRQ]][6] =
+              _data[RQ[_iofRQ]][5] - bt1[RQ[_iofRQ]] - bt2[RQ[_iofRQ]];
           _st++;
-          for (int i = 0; i < 4; ++i) _cardvs[_tt][i]=_cardv[_tt][i].toString();
-        }
-        else if(_data[RQ[_iofRQ]][3]>0){
+          for (int i = 0; i < 4; ++i)
+            _cardvs[_tt][i] = _cardv[_tt][i].toString();
+        } else if (_data[RQ[_iofRQ]][3] > 0) {
           _tt++;
           _readyq.add(List.filled(_counter, false));
-          _cardv.add([0,0,0,0]);
-          _cardvs.add(['0','0', '0','0']);
+          _cardv.add([0, 0, 0, 0]);
+          _cardvs.add(['0', '0', '0', '0']);
 
-          _cardv[_tt][0]=RQ[_iofRQ];
-          _cardv[_tt][1]=_st;
+          _cardv[_tt][0] = RQ[_iofRQ];
+          _cardv[_tt][1] = _st;
 
-
-          for(int j=_iofRQ+1;j<RQ.length;++j){
-            _readyq[_tt][RQ[j]]=true;
+          for (int j = _iofRQ + 1; j < RQ.length; ++j) {
+            _readyq[_tt][RQ[j]] = true;
           }
-          int temp=min(TQ,_data[RQ[_iofRQ]][3]);
-          _data[RQ[_iofRQ]][0]=_st+temp;
-          _data[RQ[_iofRQ]][3]-=temp;
-          ttnp=_st+temp;
-          _cardv[_tt][2]=ttnp;
+          int temp = min(TQ, _data[RQ[_iofRQ]][3]);
+          _data[RQ[_iofRQ]][0] = _st + temp;
+          _data[RQ[_iofRQ]][3] -= temp;
+          ttnp = _st + temp;
+          _cardv[_tt][2] = ttnp;
 
           _data[RQ[_iofRQ]][4] = ttnp;
-          inTQP[RQ[_iofRQ]]=!inTQP[RQ[_iofRQ]];
-          if(_data[RQ[_iofRQ]][3]==0){
-
-            _cardv[_tt][3]=1;
+          inTQP[RQ[_iofRQ]] = !inTQP[RQ[_iofRQ]];
+          if (_data[RQ[_iofRQ]][3] == 0) {
+            _cardv[_tt][3] = 1;
           }
           _data[RQ[_iofRQ]][5] = _data[RQ[_iofRQ]][4] - at[RQ[_iofRQ]];
-          _data[RQ[_iofRQ]][6] = _data[RQ[_iofRQ]][5] - bt1[RQ[_iofRQ]] - bt2[RQ[_iofRQ]];
+          _data[RQ[_iofRQ]][6] =
+              _data[RQ[_iofRQ]][5] - bt1[RQ[_iofRQ]] - bt2[RQ[_iofRQ]];
           _st++;
-          for (int i = 0; i < 4; ++i) _cardvs[_tt][i]=_cardv[_tt][i].toString();
+          for (int i = 0; i < 4; ++i)
+            _cardvs[_tt][i] = _cardv[_tt][i].toString();
         }
         _iofRQ++;
-      }
-      else{
+      } else {
         _st++;
       }
     }
@@ -140,11 +135,11 @@ class _RRIOBTState extends State<RRIOBT> {
     for (int i = 0; i < _counter; ++i) {
       _data[i][1] = bt1[i];
       _data[i][0] = at[i];
-      _data[i][3]= bt2[i];
+      _data[i][3] = bt2[i];
     }
   }
 
-  void _viz(){
+  void _viz() {
     int fct = 0;
     for (int i = 0; i < _counter; ++i) {
       fct = max(fct, _data[i][4]);
@@ -156,94 +151,92 @@ class _RRIOBTState extends State<RRIOBT> {
     _IoIn = new List<int>.filled(_counter, -1);
     _IoOut = new List<int>.filled(_counter, -1);
 
-    List<int> RQ = [], bt1,bt2,iobt, at;
-    List<bool> inTQP,vis;
+    List<int> RQ = [], bt1, bt2, iobt, at;
+    List<bool> inTQP, vis;
     bt1 = new List<int>.filled(_counter, 0);
     bt2 = new List<int>.filled(_counter, 0);
     iobt = new List<int>.filled(_counter, 0);
     at = new List<int>.filled(_counter, 0);
     for (int i = 0; i < _counter; ++i) {
       bt1[i] = _data[i][1];
-      iobt[i]= _data[i][2];
-      bt2[i]=_data[i][3];
+      iobt[i] = _data[i][2];
+      bt2[i] = _data[i][3];
       at[i] = _data[i][0];
     }
-    int ttnp=0,_iofRQ=0,st=0;
-    inTQP = new List<bool>.filled(_counter,false);
-    vis = new List<bool>.filled(_counter,false);
-    while(true){
-
+    int ttnp = 0, _iofRQ = 0, st = 0;
+    inTQP = new List<bool>.filled(_counter, false);
+    vis = new List<bool>.filled(_counter, false);
+    while (true) {
       bool flag = true;
       for (int i = 0; i < _counter; ++i) {
         if (_data[i][3] > 0) flag = false;
       }
       if (flag) break;
 
-
-
-      for(int i=0;i<_counter;++i){
-        if(_data[i][0]==st && !inTQP[i] && (_data[i][1]>0 || _data[i][3]>0)){
-
+      for (int i = 0; i < _counter; ++i) {
+        if (_data[i][0] == st &&
+            !inTQP[i] &&
+            (_data[i][1] > 0 || _data[i][3] > 0)) {
           RQ.add(i);
           //print('here chance');
         }
-        if(_data[i][0]==st && inTQP[i] && (_data[i][1]>0 || _data[i][3]>0 )){
+        if (_data[i][0] == st &&
+            inTQP[i] &&
+            (_data[i][1] > 0 || _data[i][3] > 0)) {
           //print('object');
           RQ.add(i);
-          inTQP[i]=!inTQP[i];
+          inTQP[i] = !inTQP[i];
         }
       }
-      if(st>=ttnp && _iofRQ<RQ.length){
-        if(_data[RQ[_iofRQ]][1]>0){
-          if(!vis[RQ[_iofRQ]]){
-            _data[RQ[_iofRQ]][7]=st-at[RQ[_iofRQ]];
-            vis[RQ[_iofRQ]]=true;
+      if (st >= ttnp && _iofRQ < RQ.length) {
+        if (_data[RQ[_iofRQ]][1] > 0) {
+          if (!vis[RQ[_iofRQ]]) {
+            _data[RQ[_iofRQ]][7] = st - at[RQ[_iofRQ]];
+            vis[RQ[_iofRQ]] = true;
           }
-          int temp=min(TQ,_data[RQ[_iofRQ]][1]);
-          _data[RQ[_iofRQ]][0]=st+temp;
-          for(int i=st+1;i<=st+temp;++i)
-          _ddata[i]=RQ[_iofRQ];
-          _data[RQ[_iofRQ]][1]-=temp;
-          ttnp=st+temp;
+          int temp = min(TQ, _data[RQ[_iofRQ]][1]);
+          _data[RQ[_iofRQ]][0] = st + temp;
+          for (int i = st + 1; i <= st + temp; ++i) _ddata[i] = RQ[_iofRQ];
+          _data[RQ[_iofRQ]][1] -= temp;
+          ttnp = st + temp;
           _data[RQ[_iofRQ]][4] = ttnp;
-          inTQP[RQ[_iofRQ]]=!inTQP[RQ[_iofRQ]];
+          inTQP[RQ[_iofRQ]] = !inTQP[RQ[_iofRQ]];
 
           _data[RQ[_iofRQ]][5] = _data[RQ[_iofRQ]][4] - at[RQ[_iofRQ]];
-          _data[RQ[_iofRQ]][6] = _data[RQ[_iofRQ]][5] - bt1[RQ[_iofRQ]] - bt2[RQ[_iofRQ]];
-          if(_data[RQ[_iofRQ]][1]==0){
-            _IoIn[RQ[_iofRQ]]=_data[RQ[_iofRQ]][0];
-            _data[RQ[_iofRQ]][0]+=_data[RQ[_iofRQ]][2];
-            _IoOut[RQ[_iofRQ]]=_data[RQ[_iofRQ]][0];
+          _data[RQ[_iofRQ]][6] =
+              _data[RQ[_iofRQ]][5] - bt1[RQ[_iofRQ]] - bt2[RQ[_iofRQ]];
+          if (_data[RQ[_iofRQ]][1] == 0) {
+            _IoIn[RQ[_iofRQ]] = _data[RQ[_iofRQ]][0];
+            _data[RQ[_iofRQ]][0] += _data[RQ[_iofRQ]][2];
+            _IoOut[RQ[_iofRQ]] = _data[RQ[_iofRQ]][0] - 1;
           }
           st++;
-        }
-        else if(_data[RQ[_iofRQ]][3]>0){
-          if(!vis[RQ[_iofRQ]]){
-            _data[RQ[_iofRQ]][7]=st-at[RQ[_iofRQ]];
-            vis[RQ[_iofRQ]]=true;
+        } else if (_data[RQ[_iofRQ]][3] > 0) {
+          if (!vis[RQ[_iofRQ]]) {
+            _data[RQ[_iofRQ]][7] = st - at[RQ[_iofRQ]];
+            vis[RQ[_iofRQ]] = true;
           }
-          int temp=min(TQ,_data[RQ[_iofRQ]][3]);
-          _data[RQ[_iofRQ]][0]=st+temp;
-          for(int i=st+1;i<=st+temp;++i)
-          _ddata[i]=RQ[_iofRQ];
-          _data[RQ[_iofRQ]][3]-=temp;
-          ttnp=st+temp;
+          int temp = min(TQ, _data[RQ[_iofRQ]][3]);
+          _data[RQ[_iofRQ]][0] = st + temp;
+          for (int i = st + 1; i <= st + temp; ++i) _ddata[i] = RQ[_iofRQ];
+          _data[RQ[_iofRQ]][3] -= temp;
+          ttnp = st + temp;
           _data[RQ[_iofRQ]][4] = ttnp;
-          inTQP[RQ[_iofRQ]]=!inTQP[RQ[_iofRQ]];
+          inTQP[RQ[_iofRQ]] = !inTQP[RQ[_iofRQ]];
           _data[RQ[_iofRQ]][5] = _data[RQ[_iofRQ]][4] - at[RQ[_iofRQ]];
-          _data[RQ[_iofRQ]][6] = _data[RQ[_iofRQ]][5] - bt1[RQ[_iofRQ]] - bt2[RQ[_iofRQ]];
+          _data[RQ[_iofRQ]][6] =
+              _data[RQ[_iofRQ]][5] - bt1[RQ[_iofRQ]] - bt2[RQ[_iofRQ]];
           st++;
         }
         _iofRQ++;
-      }
-      else{
+      } else {
         st++;
       }
     }
     for (int i = 0; i < _counter; ++i) {
       _data[i][1] = bt1[i];
       _data[i][0] = at[i];
-      _data[i][3]= bt2[i];
+      _data[i][3] = bt2[i];
     }
     //end
     for (int i = 0; i < fct; ++i) {
@@ -368,91 +361,90 @@ class _RRIOBTState extends State<RRIOBT> {
   }
 
   void _calculate() {
-
-    List<int> RQ = [], bt1,bt2,iobt, at;
-    List<bool> inTQP,vis;
+    List<int> RQ = [], bt1, bt2, iobt, at;
+    List<bool> inTQP, vis;
     bt1 = new List<int>.filled(_counter, 0);
     bt2 = new List<int>.filled(_counter, 0);
     iobt = new List<int>.filled(_counter, 0);
     at = new List<int>.filled(_counter, 0);
     for (int i = 0; i < _counter; ++i) {
       bt1[i] = _data[i][1];
-      iobt[i]= _data[i][2];
-      bt2[i]=_data[i][3];
+      iobt[i] = _data[i][2];
+      bt2[i] = _data[i][3];
       at[i] = _data[i][0];
     }
-    int ttnp=0,_iofRQ=0,st=0;
-    inTQP = new List<bool>.filled(_counter,false);
-    vis = new List<bool>.filled(_counter,false);
-    while(true){
-
+    int ttnp = 0, _iofRQ = 0, st = 0;
+    inTQP = new List<bool>.filled(_counter, false);
+    vis = new List<bool>.filled(_counter, false);
+    while (true) {
       bool flag = true;
       for (int i = 0; i < _counter; ++i) {
         if (_data[i][3] > 0) flag = false;
       }
       if (flag) break;
 
-
-
-      for(int i=0;i<_counter;++i){
-        if(_data[i][0]==st && !inTQP[i] && (_data[i][1]>0 || _data[i][3]>0)){
-
+      for (int i = 0; i < _counter; ++i) {
+        if (_data[i][0] == st &&
+            !inTQP[i] &&
+            (_data[i][1] > 0 || _data[i][3] > 0)) {
           RQ.add(i);
           //print('here chance');
         }
-        if(_data[i][0]==st && inTQP[i] && (_data[i][1]>0 || _data[i][3]>0 )){
+        if (_data[i][0] == st &&
+            inTQP[i] &&
+            (_data[i][1] > 0 || _data[i][3] > 0)) {
           //print('object');
           RQ.add(i);
-          inTQP[i]=!inTQP[i];
+          inTQP[i] = !inTQP[i];
         }
       }
-      if(st>=ttnp && _iofRQ<RQ.length){
-        if(_data[RQ[_iofRQ]][1]>0){
-          if(!vis[RQ[_iofRQ]]){
-            _data[RQ[_iofRQ]][7]=st-at[RQ[_iofRQ]];
-            vis[RQ[_iofRQ]]=true;
+      if (st >= ttnp && _iofRQ < RQ.length) {
+        if (_data[RQ[_iofRQ]][1] > 0) {
+          if (!vis[RQ[_iofRQ]]) {
+            _data[RQ[_iofRQ]][7] = st - at[RQ[_iofRQ]];
+            vis[RQ[_iofRQ]] = true;
           }
-          int temp=min(TQ,_data[RQ[_iofRQ]][1]);
-          _data[RQ[_iofRQ]][0]=st+temp;
-          _data[RQ[_iofRQ]][1]-=temp;
-          ttnp=st+temp;
+          int temp = min(TQ, _data[RQ[_iofRQ]][1]);
+          _data[RQ[_iofRQ]][0] = st + temp;
+          _data[RQ[_iofRQ]][1] -= temp;
+          ttnp = st + temp;
           _data[RQ[_iofRQ]][4] = ttnp;
-          inTQP[RQ[_iofRQ]]=!inTQP[RQ[_iofRQ]];
+          inTQP[RQ[_iofRQ]] = !inTQP[RQ[_iofRQ]];
 
           _data[RQ[_iofRQ]][5] = _data[RQ[_iofRQ]][4] - at[RQ[_iofRQ]];
-          _data[RQ[_iofRQ]][6] = _data[RQ[_iofRQ]][5] - bt1[RQ[_iofRQ]] - bt2[RQ[_iofRQ]];
-          if(_data[RQ[_iofRQ]][1]==0){
-            _data[RQ[_iofRQ]][0]+=_data[RQ[_iofRQ]][2];
+          _data[RQ[_iofRQ]][6] =
+              _data[RQ[_iofRQ]][5] - bt1[RQ[_iofRQ]] - bt2[RQ[_iofRQ]];
+          if (_data[RQ[_iofRQ]][1] == 0) {
+            _data[RQ[_iofRQ]][0] += _data[RQ[_iofRQ]][2];
           }
           st++;
-        }
-        else if(_data[RQ[_iofRQ]][3]>0){
-          if(!vis[RQ[_iofRQ]]){
-            _data[RQ[_iofRQ]][7]=st-at[RQ[_iofRQ]];
-            vis[RQ[_iofRQ]]=true;
+        } else if (_data[RQ[_iofRQ]][3] > 0) {
+          if (!vis[RQ[_iofRQ]]) {
+            _data[RQ[_iofRQ]][7] = st - at[RQ[_iofRQ]];
+            vis[RQ[_iofRQ]] = true;
           }
-          int temp=min(TQ,_data[RQ[_iofRQ]][3]);
-          _data[RQ[_iofRQ]][0]=st+temp;
-          _data[RQ[_iofRQ]][3]-=temp;
-          ttnp=st+temp;
+          int temp = min(TQ, _data[RQ[_iofRQ]][3]);
+          _data[RQ[_iofRQ]][0] = st + temp;
+          _data[RQ[_iofRQ]][3] -= temp;
+          ttnp = st + temp;
           _data[RQ[_iofRQ]][4] = ttnp;
-          inTQP[RQ[_iofRQ]]=!inTQP[RQ[_iofRQ]];
+          inTQP[RQ[_iofRQ]] = !inTQP[RQ[_iofRQ]];
           _data[RQ[_iofRQ]][5] = _data[RQ[_iofRQ]][4] - at[RQ[_iofRQ]];
-          _data[RQ[_iofRQ]][6] = _data[RQ[_iofRQ]][5] - bt1[RQ[_iofRQ]] - bt2[RQ[_iofRQ]];
+          _data[RQ[_iofRQ]][6] =
+              _data[RQ[_iofRQ]][5] - bt1[RQ[_iofRQ]] - bt2[RQ[_iofRQ]];
           st++;
         }
         _iofRQ++;
-      }
-      else{
+      } else {
         st++;
       }
     }
-    int _sum=0;
-    for(int i=0;i<_counter;++i) _sum+= _data[i][5];
-    _avg_tat= _sum / _counter;
-    _sum=0;
-    for(int i=0;i<_counter;++i) _sum+= _data[i][6];
-    _avg_wt= _sum / _counter;
+    int _sum = 0;
+    for (int i = 0; i < _counter; ++i) _sum += _data[i][5];
+    _avg_tat = _sum / _counter;
+    _sum = 0;
+    for (int i = 0; i < _counter; ++i) _sum += _data[i][6];
+    _avg_wt = _sum / _counter;
     for (int loc = 0; loc < _counter; ++loc) {
       for (int i = 0; i < 8; ++i) _datas[loc][i] = _data[loc][i].toString();
       int t = loc;
@@ -527,7 +519,7 @@ class _RRIOBTState extends State<RRIOBT> {
     for (int i = 0; i < _counter; ++i) {
       _data[i][1] = bt1[i];
       _data[i][0] = at[i];
-      _data[i][3]= bt2[i];
+      _data[i][3] = bt2[i];
     }
   }
 
@@ -631,7 +623,6 @@ class _RRIOBTState extends State<RRIOBT> {
           child: ListView(
             children: <Widget>[
               Container(
-
                 child: Row(
                   children: <Widget>[
                     Expanded(
@@ -645,8 +636,10 @@ class _RRIOBTState extends State<RRIOBT> {
                                   Container(
                                     child: Text(
                                       'TQ',
-                                      style: TextStyle(color: Colors.white, fontSize: 20),
-                                    ),),
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 20),
+                                    ),
+                                  ),
                                   Padding(
                                     padding: EdgeInsets.all(20),
                                   ),
@@ -656,13 +649,15 @@ class _RRIOBTState extends State<RRIOBT> {
                                       maxLines: 1,
                                       decoration: InputDecoration(
                                         enabledBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                                            borderSide: BorderSide(color: Colors.red)
-                                        ),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10)),
+                                            borderSide:
+                                                BorderSide(color: Colors.red)),
                                         focusedBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                                            borderSide: BorderSide(color: Colors.red)
-                                        ),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10)),
+                                            borderSide:
+                                                BorderSide(color: Colors.red)),
                                       ),
                                       textAlign: TextAlign.center,
                                       keyboardType: TextInputType.number,
@@ -696,7 +691,8 @@ class _RRIOBTState extends State<RRIOBT> {
                                 children: <Widget>[
                                   Text(
                                     'I/O Device',
-                                    style: TextStyle(color: Colors.white, fontSize: 20),
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 20),
                                   ),
                                 ],
                               ),
@@ -708,7 +704,8 @@ class _RRIOBTState extends State<RRIOBT> {
                                         Navigator.pop(context);
                                         Navigator.push(
                                           context,
-                                          MaterialPageRoute(builder: (context) => RR()),
+                                          MaterialPageRoute(
+                                              builder: (context) => RR()),
                                         );
                                       }),
                                 ],
@@ -794,8 +791,8 @@ class _RRIOBTState extends State<RRIOBT> {
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: Builder(
-                      builder: (context)=> (RaisedButton
-                        ( color: Colors.black,
+                      builder: (context) => (RaisedButton(
+                        color: Colors.black,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
                           side: BorderSide(color: Colors.red),
@@ -804,16 +801,13 @@ class _RRIOBTState extends State<RRIOBT> {
                           'Delete Process',
                           style: TextStyle(color: Colors.white),
                         ),
-                        onPressed: (){
+                        onPressed: () {
                           _RemoveRow();
-                          Scaffold.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Row Deleted'),
-                              )
-                          );
+                          Scaffold.of(context).showSnackBar(SnackBar(
+                            content: Text('Row Deleted'),
+                          ));
                         },
-                      )
-                      ),
+                      )),
                     ),
                     /*
                     child: (RaisedButton(
@@ -856,12 +850,13 @@ class _RRIOBTState extends State<RRIOBT> {
                         'Gantt Chart',
                         style: TextStyle(color: Colors.white),
                       ),
-                      onPressed: (){
+                      onPressed: () {
                         _Gant();
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => CARD(_cardvs,_readyq),
-                        ));
-
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CARD(_cardvs, _readyq),
+                            ));
                       },
                     )),
                   ),
@@ -891,31 +886,28 @@ class _RRIOBTState extends State<RRIOBT> {
                   Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
-                      border: Border.all(
-                          color: Colors.red
-                      ),
+                      border: Border.all(color: Colors.red),
                       borderRadius: BorderRadius.all(Radius.circular(15)),
                     ),
                     padding: EdgeInsets.all(10),
                     //padding: EdgeInsets.fromLTRB(60, 25, 0, 0),
-                    child: Text('AVg. TAT = '+ _avg_tat.toStringAsFixed(2) ,style: TextStyle(color: Colors.white)),
+                    child: Text('AVg. TAT = ' + _avg_tat.toStringAsFixed(2),
+                        style: TextStyle(color: Colors.white)),
                   ),
                   Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
-                      border: Border.all(
-                          color: Colors.red
-                      ),
+                      border: Border.all(color: Colors.red),
                       borderRadius: BorderRadius.all(Radius.circular(15)),
                     ),
                     padding: EdgeInsets.all(10),
                     //padding: EdgeInsets.fromLTRB(100, 25, 0, 0),
-                    child: Text('AVg. WT = '+ _avg_wt.toStringAsFixed(2) ,style: TextStyle(color: Colors.white)),
+                    child: Text('AVg. WT = ' + _avg_wt.toStringAsFixed(2),
+                        style: TextStyle(color: Colors.white)),
                   ),
-
                 ],
               ),
-              Container(height:700),
+              Container(height: 700),
             ],
           ),
         ));

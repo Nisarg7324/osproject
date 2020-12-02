@@ -9,16 +9,16 @@ int ft = 0;
 
 class view extends StatefulWidget {
   static void TakeData(
-      String name,
-      List<String> tNa,
-      List<String> tRe,
-      List<String> tRu,
-      List<String> tIo,
-      List<String> tTe,
-      int fct,
-      List<List<Widget>> tdisdata,
-      List<List<Widget>> tdisnum,
-      ) {
+    String name,
+    List<String> tNa,
+    List<String> tRe,
+    List<String> tRu,
+    List<String> tIo,
+    List<String> tTe,
+    int fct,
+    List<List<Widget>> tdisdata,
+    List<List<Widget>> tdisnum,
+  ) {
     H = name;
     Na = tNa;
     ft = fct;
@@ -64,7 +64,7 @@ class _viewState extends State<view> {
                             Text(
                               'Not Arrived',
                               style:
-                              TextStyle(color: Colors.white, fontSize: 25),
+                                  TextStyle(color: Colors.white, fontSize: 25),
                             ),
                             Container(
                               decoration: BoxDecoration(
@@ -89,7 +89,7 @@ class _viewState extends State<view> {
                             Text(
                               'Ready',
                               style:
-                              TextStyle(color: Colors.white, fontSize: 25),
+                                  TextStyle(color: Colors.white, fontSize: 25),
                             ),
                             Container(
                               decoration: BoxDecoration(
@@ -114,7 +114,7 @@ class _viewState extends State<view> {
                             Text(
                               'Running',
                               style:
-                              TextStyle(color: Colors.white, fontSize: 25),
+                                  TextStyle(color: Colors.white, fontSize: 25),
                             ),
                             Container(
                               decoration: BoxDecoration(
@@ -136,7 +136,7 @@ class _viewState extends State<view> {
                             Text(
                               'I/O',
                               style:
-                              TextStyle(color: Colors.white, fontSize: 25),
+                                  TextStyle(color: Colors.white, fontSize: 25),
                             ),
                             Container(
                               decoration: BoxDecoration(
@@ -161,7 +161,7 @@ class _viewState extends State<view> {
                             Text(
                               'Terminated',
                               style:
-                              TextStyle(color: Colors.white, fontSize: 25),
+                                  TextStyle(color: Colors.white, fontSize: 25),
                             ),
                             Container(
                               decoration: BoxDecoration(
@@ -189,7 +189,7 @@ class _viewState extends State<view> {
                   flex: 40,
                   child: Container(
                     decoration:
-                    BoxDecoration(border: Border.all(color: Colors.red)),
+                        BoxDecoration(border: Border.all(color: Colors.red)),
                     alignment: Alignment.topCenter,
                     child: SingleChildScrollView(
                       child: Row(
@@ -229,7 +229,7 @@ class _viewState extends State<view> {
                     ),
                     onPressed: () {
                       setState(
-                            () {
+                        () {
                           if (_t > 0) _t--;
                         },
                       );
@@ -265,7 +265,7 @@ class _viewState extends State<view> {
                     ),
                     onPressed: () {
                       setState(
-                            () {
+                        () {
                           if (_t < ft) _t++;
                         },
                       );
@@ -292,7 +292,7 @@ class _viewState extends State<view> {
                   ),
                   onPressed: () {
                     setState(
-                          () {
+                      () {
                         int temp = 0;
                         _t = max(temp, _t - 100);
                       },
@@ -311,7 +311,7 @@ class _viewState extends State<view> {
                   ),
                   onPressed: () {
                     setState(
-                          () {
+                      () {
                         int temp = 0;
                         _t = max(temp, _t - 10);
                       },
@@ -330,7 +330,7 @@ class _viewState extends State<view> {
                   ),
                   onPressed: () {
                     setState(
-                          () {
+                      () {
                         _t = min(_t + 10, ft);
                       },
                     );
@@ -348,7 +348,7 @@ class _viewState extends State<view> {
                   ),
                   onPressed: () {
                     setState(
-                          () {
+                      () {
                         _t = min(_t + 100, ft);
                       },
                     );

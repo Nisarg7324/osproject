@@ -13,7 +13,7 @@ class LRTF extends StatefulWidget {
 
 class _LRTFState extends State<LRTF> {
   var _counter = 0;
-  double _avg_tat=0,_avg_wt=0;
+  double _avg_tat = 0, _avg_wt = 0;
 
   List<DataRow> _rowList = [];
   List<List<int>> _data = [];
@@ -24,7 +24,7 @@ class _LRTFState extends State<LRTF> {
   List<String> _Na = [], _Re = [], _Ru = [], _Te = [];
   List<List<Widget>> _disdata = [], _disNum = [];
 
-  void _viz(){
+  void _viz() {
     int fct = 0;
     for (int i = 0; i < _counter; ++i) {
       fct = max(fct, _data[i][2]);
@@ -66,8 +66,6 @@ class _LRTFState extends State<LRTF> {
       _data[loc][4] = _data[loc][3] - val[loc];
     }
     for (int i = 0; i < _counter; ++i) _data[i][1] = val[i];
-
-
 
     List<int> _Running;
     _Running = new List<int>.filled(fct + 1, -1);
@@ -185,13 +183,13 @@ class _LRTFState extends State<LRTF> {
     );
   }
 
-  void _Gant(){
+  void _Gant() {
     _cardv.clear();
     _cardvs.clear();
     _readyq.clear();
-    int cal = 0, st = 0,_tt=0;
-    _cardv.add([0,0,0,0]);
-    _cardvs.add(['0','0', '0','0']);
+    int cal = 0, st = 0, _tt = 0;
+    _cardv.add([0, 0, 0, 0]);
+    _cardvs.add(['0', '0', '0', '0']);
     List<bool> vis;
     List<int> val;
     vis = new List<bool>.filled(_counter, false);
@@ -199,8 +197,7 @@ class _LRTFState extends State<LRTF> {
     for (int i = 0; i < _counter; ++i) val[i] = _data[i][1];
     while (cal != _counter) {
       _readyq.add(List.filled(_counter, false));
-      var mx = -1,
-          loc = 0;
+      var mx = -1, loc = 0;
       bool f = true;
       for (var i = 0; i < _counter; ++i) {
         if (_data[i][1] > mx && !vis[i] && st >= _data[i][0]) {
@@ -219,29 +216,30 @@ class _LRTFState extends State<LRTF> {
         continue;
       }
       if (_data[loc][1] > 0) {
-        if(_tt==0 && _cardv[_tt][0]==0 && _cardv[_tt][1]==0 && _cardv[_tt][2]==0){
-          _cardv[_tt][0]=loc;
-          _cardv[_tt][1]=st;
-          _cardv[_tt][2]=st+1;
+        if (_tt == 0 &&
+            _cardv[_tt][0] == 0 &&
+            _cardv[_tt][1] == 0 &&
+            _cardv[_tt][2] == 0) {
+          _cardv[_tt][0] = loc;
+          _cardv[_tt][1] = st;
+          _cardv[_tt][2] = st + 1;
           for (var i = 0; i < _counter; ++i) {
-            if(!vis[i] && st >= _data[i][0]){
-              _readyq[_tt][i]=true;
+            if (!vis[i] && st >= _data[i][0]) {
+              _readyq[_tt][i] = true;
             }
           }
-        }
-        else if(_cardv[_tt][0]==loc ){
+        } else if (_cardv[_tt][0] == loc) {
           _cardv[_tt][2]++;
-        }
-        else{
+        } else {
           _tt++;
-          _cardv.add([0,0,0,0]);
-          _cardvs.add(['0','0', '0','0']);
-          _cardv[_tt][0]=loc;
-          _cardv[_tt][1]=st;
-          _cardv[_tt][2]=st+1;
+          _cardv.add([0, 0, 0, 0]);
+          _cardvs.add(['0', '0', '0', '0']);
+          _cardv[_tt][0] = loc;
+          _cardv[_tt][1] = st;
+          _cardv[_tt][2] = st + 1;
           for (var i = 0; i < _counter; ++i) {
-            if(!vis[i] && st >= _data[i][0]){
-              _readyq[_tt][i]=true;
+            if (!vis[i] && st >= _data[i][0]) {
+              _readyq[_tt][i] = true;
             }
           }
         }
@@ -250,7 +248,7 @@ class _LRTFState extends State<LRTF> {
       }
       if (_data[loc][1] == 0) {
         vis[loc] = true;
-        _cardv[_tt][3]=1;
+        _cardv[_tt][3] = 1;
         cal++;
       }
       _data[loc][2] = st;
@@ -294,12 +292,12 @@ class _LRTFState extends State<LRTF> {
       _data[loc][3] = _data[loc][2] - _data[loc][0];
       _data[loc][4] = _data[loc][3] - val[loc];
       for (int i = 0; i < 5; ++i) _datas[loc][i] = _data[loc][i].toString();
-      int _sum=0;
-      for(int i=0;i<_counter;++i) _sum+= _data[i][3];
-      _avg_tat= _sum / _counter;
-      _sum=0;
-      for(int i=0;i<_counter;++i) _sum+= _data[i][4];
-      _avg_wt= _sum / _counter;
+      int _sum = 0;
+      for (int i = 0; i < _counter; ++i) _sum += _data[i][3];
+      _avg_tat = _sum / _counter;
+      _sum = 0;
+      for (int i = 0; i < _counter; ++i) _sum += _data[i][4];
+      _avg_wt = _sum / _counter;
       int t = loc;
       _rowList[loc] = DataRow(cells: <DataCell>[
         DataCell(
@@ -400,7 +398,10 @@ class _LRTFState extends State<LRTF> {
     return Scaffold(
         backgroundColor: Colors.black,
         appBar: AppBar(
-          title: Text('LRTF',style: TextStyle(fontFamily:'Pacifico'),),
+          title: Text(
+            'LRTF',
+            style: TextStyle(fontFamily: 'Pacifico'),
+          ),
           backgroundColor: Colors.red,
         ),
         body: Container(
@@ -409,7 +410,10 @@ class _LRTFState extends State<LRTF> {
             children: <Widget>[
               Padding(
                 child: Align(
-                  child: Text('I/O Device',style: TextStyle(color: Colors.white ,fontSize: 20),),
+                  child: Text(
+                    'I/O Device',
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
                   alignment: Alignment.topRight,
                 ),
                 padding: EdgeInsets.only(right: 30),
@@ -520,12 +524,13 @@ class _LRTFState extends State<LRTF> {
                         'Gantt Chart',
                         style: TextStyle(color: Colors.white),
                       ),
-                      onPressed: (){
+                      onPressed: () {
                         _Gant();
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => CARD(_cardvs,_readyq),
-                        ));
-
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CARD(_cardvs, _readyq),
+                            ));
                       },
                     )),
                   ),
@@ -555,34 +560,30 @@ class _LRTFState extends State<LRTF> {
                   Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
-                      border: Border.all(
-                          color: Colors.red
-                      ),
+                      border: Border.all(color: Colors.red),
                       borderRadius: BorderRadius.all(Radius.circular(15)),
                     ),
                     padding: EdgeInsets.all(10),
                     //padding: EdgeInsets.fromLTRB(60, 25, 0, 0),
-                    child: Text('AVg. TAT = '+ _avg_tat.toStringAsFixed(2) ,style: TextStyle(color: Colors.white)),
+                    child: Text('AVg. TAT = ' + _avg_tat.toStringAsFixed(2),
+                        style: TextStyle(color: Colors.white)),
                   ),
                   Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
-                      border: Border.all(
-                          color: Colors.red
-                      ),
+                      border: Border.all(color: Colors.red),
                       borderRadius: BorderRadius.all(Radius.circular(15)),
                     ),
                     padding: EdgeInsets.all(10),
                     //padding: EdgeInsets.fromLTRB(100, 25, 0, 0),
-                    child: Text('AVg. WT = '+ _avg_wt.toStringAsFixed(2) ,style: TextStyle(color: Colors.white)),
+                    child: Text('AVg. WT = ' + _avg_wt.toStringAsFixed(2),
+                        style: TextStyle(color: Colors.white)),
                   ),
-
                 ],
               ),
-              Container(height:700),
+              Container(height: 700),
             ],
           ),
-        )
-    );
+        ));
   }
 }

@@ -275,7 +275,6 @@ class _RRState extends State<RR> {
       context,
       MaterialPageRoute(builder: (context) => view()),
     );
-
   }
 
   void _calculate() {

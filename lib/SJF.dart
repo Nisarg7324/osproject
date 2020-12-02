@@ -13,19 +13,18 @@ class SJF extends StatefulWidget {
 
 class _SJFState extends State<SJF> {
   var _counter = 0;
-  double _avg_tat=0,_avg_wt=0;
+  double _avg_tat = 0, _avg_wt = 0;
 
   List<DataRow> _rowList = [];
   List<List<int>> _data = [];
   List<List<String>> _datas = [];
   List<List<int>> _cardv = [];
   List<List<String>> _cardvs = [];
-  List<List<bool>> _readyq=[];
+  List<List<bool>> _readyq = [];
   List<String> _Na = [], _Re = [], _Ru = [], _Te = [];
   List<List<Widget>> _disdata = [], _disNum = [];
 
-
-  void _viz(){
+  void _viz() {
     int fct = 0;
     for (int i = 0; i < _counter; ++i) {
       fct = max(fct, _data[i][2]);
@@ -146,8 +145,8 @@ class _SJFState extends State<SJF> {
     );
   }
 
-  void _Gant(){
-    int cal = 0, st = 0,_tt=0;
+  void _Gant() {
+    int cal = 0, st = 0, _tt = 0;
     _cardv.clear();
     _cardvs.clear();
     _readyq.clear();
@@ -163,8 +162,8 @@ class _SJFState extends State<SJF> {
           loc = i;
           f = false;
         }
-        if(!vis[i] && st >= _data[i][0]){
-          _readyq[_tt][i]=true;
+        if (!vis[i] && st >= _data[i][0]) {
+          _readyq[_tt][i] = true;
         }
       }
       if (f) {
@@ -172,22 +171,22 @@ class _SJFState extends State<SJF> {
         _readyq.removeLast();
         continue;
       }
-      _cardv.add([0,0,0,0]);
-      _cardvs.add(['0','0', '0','0']);
+      _cardv.add([0, 0, 0, 0]);
+      _cardvs.add(['0', '0', '0', '0']);
       vis[loc] = true;
-      _cardv[_tt][0]=loc;
-      _cardv[_tt][1]=st;
+      _cardv[_tt][0] = loc;
+      _cardv[_tt][1] = st;
       cal++;
       _data[loc][2] = st + _data[loc][1];
       st = _data[loc][2];
-      _cardv[_tt][2]=st;
-      _cardv[_tt][3]=1;
+      _cardv[_tt][2] = st;
+      _cardv[_tt][3] = 1;
       _data[loc][3] = _data[loc][2] - _data[loc][0];
       _data[loc][4] = _data[loc][3] - _data[loc][1];
       for (int i = 0; i < 5; ++i) _datas[loc][i] = _data[loc][i].toString();
-      for (int i = 0; i < 4; ++i) _cardvs[_tt][i]=_cardv[_tt][i].toString();
+      for (int i = 0; i < 4; ++i) _cardvs[_tt][i] = _cardv[_tt][i].toString();
       _tt++;
-  }
+    }
   }
 
   void _calculate() {
@@ -215,12 +214,12 @@ class _SJFState extends State<SJF> {
       _data[loc][3] = _data[loc][2] - _data[loc][0];
       _data[loc][4] = _data[loc][3] - _data[loc][1];
       for (int i = 0; i < 5; ++i) _datas[loc][i] = _data[loc][i].toString();
-      int _sum=0;
-      for(int i=0;i<_counter;++i) _sum+= _data[i][3];
-      _avg_tat= _sum / _counter;
-      _sum=0;
-      for(int i=0;i<_counter;++i) _sum+= _data[i][4];
-      _avg_wt= _sum / _counter;
+      int _sum = 0;
+      for (int i = 0; i < _counter; ++i) _sum += _data[i][3];
+      _avg_tat = _sum / _counter;
+      _sum = 0;
+      for (int i = 0; i < _counter; ++i) _sum += _data[i][4];
+      _avg_wt = _sum / _counter;
       int t = loc;
       _rowList[loc] = DataRow(cells: <DataCell>[
         DataCell(
@@ -322,7 +321,10 @@ class _SJFState extends State<SJF> {
     return Scaffold(
         backgroundColor: Colors.black,
         appBar: AppBar(
-          title: Text('SJF',style: TextStyle(fontFamily:'Pacifico'),),
+          title: Text(
+            'SJF',
+            style: TextStyle(fontFamily: 'Pacifico'),
+          ),
           backgroundColor: Colors.red,
         ),
         body: Container(
@@ -331,7 +333,10 @@ class _SJFState extends State<SJF> {
             children: <Widget>[
               Padding(
                 child: Align(
-                  child: Text('I/O Device',style: TextStyle(color: Colors.white ,fontSize: 20),),
+                  child: Text(
+                    'I/O Device',
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
                   alignment: Alignment.topRight,
                 ),
                 padding: EdgeInsets.only(right: 30),
@@ -442,12 +447,13 @@ class _SJFState extends State<SJF> {
                         'Gantt Chart',
                         style: TextStyle(color: Colors.white),
                       ),
-                      onPressed: (){
+                      onPressed: () {
                         _Gant();
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => CARD(_cardvs,_readyq),
-                        ));
-
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CARD(_cardvs, _readyq),
+                            ));
                       },
                     )),
                   ),
@@ -477,31 +483,28 @@ class _SJFState extends State<SJF> {
                   Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
-                      border: Border.all(
-                          color: Colors.red
-                      ),
+                      border: Border.all(color: Colors.red),
                       borderRadius: BorderRadius.all(Radius.circular(15)),
                     ),
                     padding: EdgeInsets.all(10),
                     //padding: EdgeInsets.fromLTRB(60, 25, 0, 0),
-                    child: Text('AVg. TAT = '+ _avg_tat.toStringAsFixed(2) ,style: TextStyle(color: Colors.white)),
+                    child: Text('AVg. TAT = ' + _avg_tat.toStringAsFixed(2),
+                        style: TextStyle(color: Colors.white)),
                   ),
                   Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
-                      border: Border.all(
-                          color: Colors.red
-                      ),
+                      border: Border.all(color: Colors.red),
                       borderRadius: BorderRadius.all(Radius.circular(15)),
                     ),
                     padding: EdgeInsets.all(10),
                     //padding: EdgeInsets.fromLTRB(100, 25, 0, 0),
-                    child: Text('AVg. WT = '+ _avg_wt.toStringAsFixed(2) ,style: TextStyle(color: Colors.white)),
+                    child: Text('AVg. WT = ' + _avg_wt.toStringAsFixed(2),
+                        style: TextStyle(color: Colors.white)),
                   ),
-
                 ],
               ),
-              Container(height:700),
+              Container(height: 700),
             ],
           ),
         ));

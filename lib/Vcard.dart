@@ -3,52 +3,48 @@ import 'dart:isolate';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class customExpansionTile extends StatefulWidget{
+class customExpansionTile extends StatefulWidget {
   int index;
-  List lls,rqqq;
-  String _rq,_tq;
-  customExpansionTile(int index,List lls, List rqqq, String _rq, String _tq)
-  {
-    this.index=index;
-    this.lls=lls;
-    this.rqqq=rqqq;
-    this._rq=_rq;
-    this._tq=_tq;
+  List lls, rqqq;
+  String _rq, _tq;
+  customExpansionTile(int index, List lls, List rqqq, String _rq, String _tq) {
+    this.index = index;
+    this.lls = lls;
+    this.rqqq = rqqq;
+    this._rq = _rq;
+    this._tq = _tq;
   }
 
   @override
-  customExpansionTilestate createState() => customExpansionTilestate(index,lls,rqqq,_rq,_tq);
-
-
+  customExpansionTilestate createState() =>
+      customExpansionTilestate(index, lls, rqqq, _rq, _tq);
 }
 
-class customExpansionTilestate extends State{
+class customExpansionTilestate extends State {
   int i;
-  List ls=[],rql=[];
-  String _r,_t;
-  customExpansionTilestate(int index, List lls, List rqqq, String rq, String tq){
-    i=index;
-    ls=lls;
-    rql=rqqq;
-    _r=rq;
-    _t=tq;
+  List ls = [], rql = [];
+  String _r, _t;
+  customExpansionTilestate(
+      int index, List lls, List rqqq, String rq, String tq) {
+    i = index;
+    ls = lls;
+    rql = rqqq;
+    _r = rq;
+    _t = tq;
   }
 
   Color _textcolor = Colors.black;
   bool isExpanded = false;
 
-
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
-      trailing: isExpanded? Icon(
-          FontAwesomeIcons.chevronCircleUp,
-        color: Colors.black,
-      ):
-      Icon(
-          FontAwesomeIcons.chevronCircleDown
-      ),
-
+      trailing: isExpanded
+          ? Icon(
+              FontAwesomeIcons.chevronCircleUp,
+              color: Colors.black,
+            )
+          : Icon(FontAwesomeIcons.chevronCircleDown),
       title: Column(
         children: <Widget>[
           Row(
@@ -57,7 +53,8 @@ class customExpansionTilestate extends State{
                 padding: EdgeInsets.all(4),
                 child: Container(
                   //height: 100,
-                  child: Text('Process:' + ls[i][0] ,
+                  child: Text(
+                    'Process:' + ls[i][0],
                     style: TextStyle(
                       fontSize: 20,
                       color: _textcolor,
@@ -73,7 +70,8 @@ class customExpansionTilestate extends State{
                 padding: EdgeInsets.all(4),
                 child: Container(
                   //height: 50,
-                  child: Text('Start Time: ' + ls[i][1],
+                  child: Text(
+                    'Start Time: ' + ls[i][1],
                     style: TextStyle(
                       fontSize: 20,
                       color: _textcolor,
@@ -89,7 +87,8 @@ class customExpansionTilestate extends State{
                 padding: EdgeInsets.all(4),
                 child: Container(
                   //height: 50,
-                  child: Text('End Time: ' + ls[i][2],
+                  child: Text(
+                    'End Time: ' + ls[i][2],
                     style: TextStyle(
                       fontSize: 20,
                       color: _textcolor,
@@ -108,7 +107,8 @@ class customExpansionTilestate extends State{
               padding: EdgeInsets.all(4),
               child: Container(
                 //height: 50,
-                child: Text('Ready Queue:' + _r ,
+                child: Text(
+                  'Ready Queue:' + _r,
                   style: TextStyle(
                     fontSize: 20,
                   ),
@@ -123,7 +123,8 @@ class customExpansionTilestate extends State{
               padding: EdgeInsets.all(4),
               child: Container(
                 //height: 50,
-                child: Text('Finished Queue:' + _t,
+                child: Text(
+                  'Finished Queue:' + _t,
                   style: TextStyle(
                     fontSize: 20,
                   ),
@@ -133,9 +134,8 @@ class customExpansionTilestate extends State{
           ],
         ),
       ],
-
-      onExpansionChanged: (bool expanding) => setState(() => this.isExpanded = expanding),
+      onExpansionChanged: (bool expanding) =>
+          setState(() => this.isExpanded = expanding),
     );
   }
-
 }

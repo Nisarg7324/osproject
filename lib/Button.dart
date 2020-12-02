@@ -5,8 +5,10 @@ import './SRTF.dart';
 import './LJF.dart';
 import './LRTF.dart';
 import './RR.dart';
+import './priority.dart';
+import './PPriority.dart';
 
-class Schedule extends StatelessWidget{
+class Schedule extends StatelessWidget {
   @override
   String s;
   BuildContext conText;
@@ -14,59 +16,69 @@ class Schedule extends StatelessWidget{
   //constructor
   Schedule(this.s);
 
-
   //next page function
-  void Page(){
-    if(s=='FCFS'){
+  void Page() {
+    if (s == 'FCFS') {
       Navigator.push(
         conText,
         MaterialPageRoute(builder: (conText) => FCFS()),
       );
-    }else if(s=='SJF'){
+    } else if (s == 'SJF') {
       Navigator.push(
         conText,
         MaterialPageRoute(builder: (conText) => SJF()),
       );
-    }else if(s=='SRTF'){
+    } else if (s == 'SRTF') {
       Navigator.push(
         conText,
         MaterialPageRoute(builder: (conText) => SRTF()),
       );
-    }else if(s=='LJF'){
+    } else if (s == 'LJF') {
       Navigator.push(
         conText,
         MaterialPageRoute(builder: (conText) => LJF()),
       );
-    }else if(s=='LRTF'){
+    } else if (s == 'LRTF') {
       Navigator.push(
         conText,
         MaterialPageRoute(builder: (conText) => LRTF()),
       );
-    }else if(s=='RR'){
+    } else if (s == 'RR') {
       Navigator.push(
         conText,
         MaterialPageRoute(builder: (conText) => RR()),
       );
+    } else if (s == 'Priority') {
+      Navigator.push(
+        conText,
+        MaterialPageRoute(builder: (conText) => Priority()),
+      );
+    } else if (s == 'Priority preemp') {
+      Navigator.push(
+        conText,
+        MaterialPageRoute(builder: (conText) => PPriority()),
+      );
     }
   }
 
-
-
-  Widget build(BuildContext context){conText = context;
+  Widget build(BuildContext context) {
+    conText = context;
     //style this raised button anyone..!!!
     //raised button on home page
-    return RaisedButton(child: Container(child: Center(child:Text(s,
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 15.0,
-          letterSpacing: 2,
-          fontWeight: FontWeight.bold,
-        )
-    ),
-    ),
-      width: 150,
-      height: 25,
-    ),
+    return RaisedButton(
+      child: Container(
+        child: Center(
+          child: Text(s,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 15.0,
+                letterSpacing: 2,
+                fontWeight: FontWeight.bold,
+              )),
+        ),
+        width: 150,
+        height: 25,
+      ),
       onPressed: Page,
       color: Colors.red,
       shape: RoundedRectangleBorder(
