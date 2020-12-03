@@ -190,7 +190,7 @@ class _PriorityState extends State<Priority> {
     while (cal != _counter) {
       var mx = -1, loc = -1;
       for (var i = 0; i < _counter; ++i) {
-        if (_data[i][0] > mx && st >= _data[i][0] && !vis[i]) {
+        if (_data[i][0] > mx && st >= _data[i][1] && !vis[i]) {
           mx = _data[i][0];
           loc = i;
         }
