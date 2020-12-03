@@ -150,35 +150,40 @@ class _PriorityState extends State<Priority> {
     _cardvs.clear();
     _readyq.clear();
 
-    int cal = 0, st = 0, _tt = 0;
+    int cal = 0, st = 0,_tt=0;
     List<bool> vis;
     vis = new List<bool>.filled(_counter, false);
     while (cal != _counter) {
-      _readyq.add(List.filled(_counter, false));
-      var mn = 100, loc = 0;
+      var mx = -1, loc = -1;
       for (var i = 0; i < _counter; ++i) {
-        if (_data[i][0] < mn && !vis[i]) {
-          mn = _data[i][0];
+        if (_data[i][0] > mx && st >= _data[i][1] && !vis[i]) {
+          mx = _data[i][0];
           loc = i;
         }
-        if (!vis[i] && st >= _data[i][0]) {
-          _readyq[_tt][i] = true;
+      }
+      if (loc == -1) {
+        st++;
+        continue;
+      }
+      _readyq.add(List.filled(_counter, false));
+      for (var i = 0; i < _counter; ++i) {
+        if (st >= max(_data[loc][1], st) && !vis[i]) {
+          _readyq[_tt][i]=true;
         }
       }
-      _cardv.add([0, 0, 0, 0]);
-      _cardvs.add(['0', '0', '0', '0']);
+      _readyq[_tt][loc]=false;
       vis[loc] = true;
       cal++;
-      _cardv[_tt][0] = loc;
-      _cardv[_tt][1] = max(_data[loc][0], st);
-      _data[loc][2] = max(_data[loc][0], st) + _data[loc][1];
-      st = _data[loc][2];
-      _cardv[_tt][2] = _data[loc][2];
-      _cardv[_tt][3] = 1;
-      _data[loc][3] = _data[loc][2] - _data[loc][0];
+      _cardv[_tt][0]=loc;
+      _cardv[_tt][1]=max(_data[loc][1], st);
+      _data[loc][3] = max(_data[loc][1], st) + _data[loc][2];
+      _cardv[_tt][2]= _data[loc][3];
+      _cardv[_tt][3]=1;
+      st = _data[loc][3];
       _data[loc][4] = _data[loc][3] - _data[loc][1];
-      for (int i = 0; i < 5; ++i) _datas[loc][i] = _data[loc][i].toString();
-      for (int i = 0; i < 4; ++i) _cardvs[_tt][i] = _cardv[_tt][i].toString();
+      _data[loc][5] = _data[loc][4] - _data[loc][2];
+      for (int i = 0; i < 6; ++i) _datas[loc][i] = _data[loc][i].toString();
+      for (int i = 0; i < 4; ++i) _cardvs[loc][i] = _cardv[loc][i].toString();
       _tt++;
     }
   }
