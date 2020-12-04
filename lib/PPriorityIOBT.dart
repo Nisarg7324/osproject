@@ -228,9 +228,8 @@ class _PPriorityIOBTState extends State<PPriorityIOBT> {
     _cardv.clear();
     _cardvs.clear();
     _readyq.clear();
-    _cardv.add([0, 0, 0, 0]);
-    _cardvs.add(['0', '0', '0', '0']);
-    int cal = 0, st = 0, _tt = 0;
+
+    int cal = 0, st = 0,_tt=-1;
     List<int> vis, artime, tbt, bt1, bt2;
     vis = new List<int>.filled(_counter, 0);
     artime = new List<int>.filled(_counter, 0);
@@ -238,185 +237,92 @@ class _PPriorityIOBTState extends State<PPriorityIOBT> {
     bt1 = new List<int>.filled(_counter, 0);
     bt2 = new List<int>.filled(_counter, 0);
     for (int i = 0; i < _counter; ++i) {
-      artime[i] = _data[i][0];
-      tbt[i] = _data[i][1] + _data[i][3];
-      bt1[i] = _data[i][1];
-      bt2[i] = _data[i][3];
+      artime[i] = _data[i][1];
+      bt1[i] = _data[i][2];
+      bt2[i] = _data[i][4];
+      _data[i][8] = 100;
     }
     while (cal != 2 * _counter) {
-      _readyq.add(List.filled(_counter, false));
       var mx = -1, loc = 0;
       bool f = true;
       for (var i = 0; i < _counter; ++i) {
-        if (tbt[i] > mx && (vis[i] == 0 || vis[i] == 1) && st >= _data[i][0]) {
-          mx = tbt[i];
+        if (_data[i][0] > mx &&
+            (vis[i] == 0 || vis[i] == 1) &&
+            st >= _data[i][1]) {
+          mx = _data[i][0];
           loc = i;
           f = false;
         }
-        /*
-        if((vis[i] == 0 || vis[i] == 1) && st >= _data[i][0]){
-          _readyq[_tt][i]=true;
-        }*/
       }
       if (f) {
         st++;
-        //_readyq.removeLast();
         continue;
       }
-      //print(vis[loc]);
-      //print(_data[loc]);
-      //print('--');
-      _data[loc][7] = min(_data[loc][7], st);
-      //print(loc);
+      _readyq.add(List.filled(_counter, false));
+      if(_tt==-1){
+        _tt++;
+        _cardv.add([0, 0, 0, 0]);
+        _cardvs.add(['0', '0', '0', '0']);
+        _cardv[_tt][0]=loc;
+        _cardv[_tt][1]=st;
+        _cardv[_tt][2]=st;
+      }
+      _data[loc][8] = min(_data[loc][8], st);
       if (vis[loc] == 0) {
-        if (_data[loc][1] > 0) {
-          if (_tt == 0 &&
-              _cardv[_tt][0] == 0 &&
-              _cardv[_tt][1] == 0 &&
-              _cardv[_tt][2] == 0) {
-            _cardv[_tt][0] = loc;
-            _cardv[_tt][1] = st;
-            _cardv[_tt][2] = st + 1;
-            for (var i = 0; i < _counter; ++i) {
-              if ((vis[i] == 0 || vis[i] == 1) && st >= _data[i][0]) {
-                _readyq[_tt][i] = true;
-              }
-            }
-          } else if (_cardv[_tt][0] == loc && _cardv[_tt][2] == st) {
+        if (_data[loc][2] > 0) {
+          if(_cardv[_tt][0]==loc){
             _cardv[_tt][2]++;
-          } else {
+          }
+          else{
             _tt++;
             _cardv.add([0, 0, 0, 0]);
             _cardvs.add(['0', '0', '0', '0']);
-            _cardv[_tt][0] = loc;
-            _cardv[_tt][1] = st;
-            for (var i = 0; i < _counter; ++i) {
-              if ((vis[i] == 0 || vis[i] == 1) && st >= _data[i][0]) {
-                _readyq[_tt][i] = true;
-              }
-            }
-            _cardv[_tt][2] = st + 1;
+            _cardv[_tt][0]=loc;
+            _cardv[_tt][1]=st;
+            _cardv[_tt][2]=st+1;
           }
           st++;
-          _data[loc][1]--;
-          tbt[loc]--;
+          _data[loc][2]--;
         }
-        if (_data[loc][1] == 0) {
-          if (_tt == 0 &&
-              _cardv[_tt][0] == 0 &&
-              _cardv[_tt][1] == 0 &&
-              _cardv[_tt][2] == 0) {
-            _cardv[_tt][0] = loc;
-            _cardv[_tt][1] = st;
-            _cardv[_tt][2] = st;
-            _cardv[_tt][3] = 2;
-            for (var i = 0; i < _counter; ++i) {
-              if ((vis[i] == 0 || vis[i] == 1) && st >= _data[i][0]) {
-                _readyq[_tt][i] = true;
-              }
-            }
-          } else if (_cardv[_tt][0] == loc) {
-            //_cardv[_tt][2]++;
-            _cardv[_tt][3] = 2;
-          } else {
-            _tt++;
-            _cardv.add([0, 0, 0, 0]);
-            _cardvs.add(['0', '0', '0', '0']);
-            _cardv[_tt][0] = loc;
-            _cardv[_tt][1] = st;
-            _cardv[_tt][2] = st;
-            _cardv[_tt][3] = 2;
-            for (var i = 0; i < _counter; ++i) {
-              if ((vis[i] == 0 || vis[i] == 1) && st >= _data[i][0]) {
-                _readyq[_tt][i] = true;
-              }
-            }
-          }
-          _data[loc][0] = st + _data[loc][2];
+        if (_data[loc][2] == 0) {
+          _cardv[_tt][3]=2;
+          _data[loc][1] = st + _data[loc][3];
           vis[loc]++;
           cal++;
-        }
-      } else {
-        if (_data[loc][3] > 0) {
-          if (_tt == 0 &&
-              _cardv[_tt][0] == 0 &&
-              _cardv[_tt][1] == 0 &&
-              _cardv[_tt][2] == 0) {
-            _cardv[_tt][0] = loc;
-            _cardv[_tt][1] = st;
-            for (var i = 0; i < _counter; ++i) {
-              if ((vis[i] == 0 || vis[i] == 1) && st >= _data[i][0]) {
-                _readyq[_tt][i] = true;
-              }
-            }
-            _cardv[_tt][2] = st + 1;
-          } else if (_cardv[_tt][0] == loc && _cardv[_tt][2] == st) {
-            //print(_cardv[_tt][2]);
-            //print(st);
-            _cardv[_tt][2]++;
-          } else {
-            _tt++;
-            _cardv.add([0, 0, 0, 0]);
-            _cardvs.add(['0', '0', '0', '0']);
-            for (var i = 0; i < _counter; ++i) {
-              if ((vis[i] == 0 || vis[i] == 1) && st >= _data[i][0]) {
-                _readyq[_tt][i] = true;
-              }
-            }
-            _cardv[_tt][0] = loc;
-            _cardv[_tt][1] = st;
-            _cardv[_tt][2] = st + 1;
-          }
-          st++;
-          _data[loc][3]--;
-          tbt[loc]--;
-        }
-        if (_data[loc][3] == 0) {
-          if (_tt == 0 &&
-              _cardv[_tt][0] == 0 &&
-              _cardv[_tt][1] == 0 &&
-              _cardv[_tt][2] == 0) {
-            _cardv[_tt][0] = loc;
-            _cardv[_tt][1] = st;
-            _cardv[_tt][2] = st;
-            _cardv[_tt][3] = 1;
-            for (var i = 0; i < _counter; ++i) {
-              if ((vis[i] == 0 || vis[i] == 1) && st >= _data[i][0]) {
-                _readyq[_tt][i] = true;
-              }
-            }
-          } else if (_cardv[_tt][0] == loc) {
-            //_cardv[_tt][2]++;
-            _cardv[_tt][3] = 1;
-          } else {
-            _tt++;
-            _cardv.add([0, 0, 0, 0]);
-            _cardvs.add(['0', '0', '0', '0']);
-            _cardv[_tt][0] = loc;
-            _cardv[_tt][1] = st;
-            _cardv[_tt][2] = st;
-            _cardv[_tt][3] = 1;
-            for (var i = 0; i < _counter; ++i) {
-              if ((vis[i] == 0 || vis[i] == 1) && st >= _data[i][0]) {
-                _readyq[_tt][i] = true;
-              }
-            }
-          }
-          vis[loc]++;
-          cal++;
-          _data[loc][4] = st;
-          _data[loc][5] = _data[loc][4] - artime[loc];
-          _data[loc][6] = _data[loc][5] - bt1[loc] - bt2[loc];
         }
       }
-      for (int i = 0; i < 8; ++i) _datas[loc][i] = _data[loc][i].toString();
+      else {
+        if (_data[loc][4] > 0) {
+          if(_cardv[_tt][0]==loc){
+            _cardv[_tt][2]++;
+          }
+          else{
+            _tt++;
+            _cardv.add([0, 0, 0, 0]);
+            _cardvs.add(['0', '0', '0', '0']);
+            _cardv[_tt][0]=loc;
+            _cardv[_tt][1]=st;
+            _cardv[_tt][2]=st+1;
+          }
+          st++;
+          _data[loc][4]--;
+        }
+        if (_data[loc][4] == 0) {
+          _cardv[_tt][3]=1;
+          vis[loc]++;
+          cal++;
+          _data[loc][5] = st;
+          _data[loc][6] = _data[loc][5] - artime[loc];
+          _data[loc][7] = _data[loc][6] - bt1[loc] - bt2[loc];
+        }
+      }
+      for (int i = 0; i < 9; ++i) _datas[loc][i] = _data[loc][i].toString();
       for (int i = 0; i < 4; ++i) _cardvs[_tt][i] = _cardv[_tt][i].toString();
     }
-
     for (int i = 0; i < _counter; ++i) {
-      _data[i][0] = artime[i];
-      _data[i][1] = bt1[i];
-      _data[i][3] = bt2[i];
+      _data[i][1] = artime[i];
+      _data[i][2] = bt1[i];
+      _data[i][4] = bt2[i];
     }
   }
 
@@ -480,10 +386,10 @@ class _PPriorityIOBTState extends State<PPriorityIOBT> {
       }
       for (int i = 0; i < 9; ++i) _datas[loc][i] = _data[loc][i].toString();
       int _sum = 0;
-      for (int i = 0; i < _counter; ++i) _sum += _data[i][5];
+      for (int i = 0; i < _counter; ++i) _sum += _data[i][6];
       _avg_tat = _sum / _counter;
       _sum = 0;
-      for (int i = 0; i < _counter; ++i) _sum += _data[i][6];
+      for (int i = 0; i < _counter; ++i) _sum += _data[i][7];
       _avg_wt = _sum / _counter;
       int t = loc;
       _rowList[loc] = DataRow(cells: <DataCell>[
@@ -784,18 +690,28 @@ class _PPriorityIOBTState extends State<PPriorityIOBT> {
                   ),
                   Align(
                     alignment: Alignment.bottomCenter,
-                    child: (RaisedButton(
-                      color: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        side: BorderSide(color: Colors.red),
+                    child: Builder(
+                      builder: (context)=> (RaisedButton
+                        ( color: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          side: BorderSide(color: Colors.red),
+                        ),
+                        child: Text(
+                          'Delete Process',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onPressed: (){
+                          _RemoveRow();
+                          Scaffold.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Row Deleted'),
+                              )
+                          );
+                        },
+                      )
                       ),
-                      child: Text(
-                        'Delete Process',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      onPressed: _RemoveRow,
-                    )),
+                    ),
                   ),
                 ],
               ),

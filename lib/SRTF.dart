@@ -493,18 +493,28 @@ class _SRTFState extends State<SRTF> {
                   ),
                   Align(
                     alignment: Alignment.bottomCenter,
-                    child: (RaisedButton(
-                      color: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        side: BorderSide(color: Colors.red),
+                    child: Builder(
+                      builder: (context)=> (RaisedButton
+                        ( color: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          side: BorderSide(color: Colors.red),
+                        ),
+                        child: Text(
+                          'Delete Process',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onPressed: (){
+                          _RemoveRow();
+                          Scaffold.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Row Deleted'),
+                              )
+                          );
+                        },
+                      )
                       ),
-                      child: Text(
-                        'Delete Process',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      onPressed: _RemoveRow,
-                    )),
+                    ),
                   ),
                 ],
               ),

@@ -174,6 +174,8 @@ class _PriorityState extends State<Priority> {
       _readyq[_tt][loc]=false;
       vis[loc] = true;
       cal++;
+      _cardv.add([0, 0, 0, 0]);
+      _cardvs.add(['0', '0', '0', '0']);
       _cardv[_tt][0]=loc;
       _cardv[_tt][1]=max(_data[loc][1], st);
       _data[loc][3] = max(_data[loc][1], st) + _data[loc][2];
@@ -183,7 +185,7 @@ class _PriorityState extends State<Priority> {
       _data[loc][4] = _data[loc][3] - _data[loc][1];
       _data[loc][5] = _data[loc][4] - _data[loc][2];
       for (int i = 0; i < 6; ++i) _datas[loc][i] = _data[loc][i].toString();
-      for (int i = 0; i < 4; ++i) _cardvs[loc][i] = _cardv[loc][i].toString();
+      for (int i = 0; i < 4; ++i) _cardvs[_tt][i] = _cardv[_tt][i].toString();
       _tt++;
     }
   }
@@ -442,18 +444,28 @@ class _PriorityState extends State<Priority> {
                   ),
                   Align(
                     alignment: Alignment.bottomCenter,
-                    child: (RaisedButton(
-                      color: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        side: BorderSide(color: Colors.red),
+                    child: Builder(
+                      builder: (context)=> (RaisedButton
+                        ( color: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          side: BorderSide(color: Colors.red),
+                        ),
+                        child: Text(
+                          'Delete Process',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onPressed: (){
+                          _RemoveRow();
+                          Scaffold.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Row Deleted'),
+                              )
+                          );
+                        },
+                      )
                       ),
-                      child: Text(
-                        'Delete Process',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      onPressed: _RemoveRow,
-                    )),
+                    ),
                   ),
                 ],
               ),

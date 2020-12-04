@@ -34,12 +34,12 @@ class CARDstate extends State {
       ),
       body: Container(
           child: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            for (var i = 0; i < ls.length; i++) Vcard(i, ls, rqq)
-          ],
-        ),
-      )),
+            child: Column(
+              children: <Widget>[
+                for (var i = 0; i < ls.length; i++) Vcard(i, ls, rqq)
+              ],
+            ),
+          )),
     );
   }
 }
@@ -59,18 +59,17 @@ class Vcard extends StatelessWidget {
     _rq = "";
     _tq = "";
     int c = rqqq[i].length;
-    //print(c);
     for (int j = 0; j < c; j++) {
       if (rqq[i][j] && ls[i][0] != j) {
         if (j.toString() != lls[index][0]) {
           print(j);
           print(lls[index][0]);
-          print('---');
+          //print('---');
           _rq += ' P' + j.toString();
         }
       }
     }
-    print('********');
+    //print('********');
 
     for (var j = 0; j < index; ++j)
       if (lls[j][3] == '1') _tq += ' P' + lls[j][0];
@@ -89,96 +88,6 @@ class Vcard extends StatelessWidget {
               padding: EdgeInsets.all(10),
               child: Column(
                 children: <Widget>[
-                  /*ExpansionTile(
-                    trailing: Icon(
-                        FontAwesomeIcons.chevronCircleDown
-                    ),
-
-                    title: Column(
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.all(4),
-                              child: Container(
-                                //height: 100,
-                                child: Text('Process:' + lls[index][0] ,
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    color: _textcolor,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.all(4),
-                              child: Container(
-                                //height: 50,
-                                child: Text('Start Time: ' + lls[index][1],
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    color: _textcolor,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.all(4),
-                              child: Container(
-                                //height: 50,
-                                child: Text('End Time: ' + lls[index][2],
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    color: _textcolor,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.all(4),
-                            child: Container(
-                              //height: 50,
-                              child: Text('Ready Queue:' + _rq ,
-                                style: TextStyle(
-                                  fontSize: 20,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.all(4),
-                            child: Container(
-                              //height: 50,
-                              child: Text('Finished Queue:' + _tq,
-                                style: TextStyle(
-                                  fontSize: 20,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),*/
                   customExpansionTile(index, lls, rqqq, _rq, _tq),
                 ],
               )),
@@ -186,8 +95,8 @@ class Vcard extends StatelessWidget {
         color: lls[index][3] == '1'
             ? Colors.green
             : lls[index][3] == '2'
-                ? Colors.grey
-                : Colors.red,
+            ? Colors.grey
+            : Colors.red,
         //lls[index][3]==2? Colors.grey:
       ),
     );

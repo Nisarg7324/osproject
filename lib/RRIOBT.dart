@@ -652,12 +652,12 @@ class _RRIOBTState extends State<RRIOBT> {
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(10)),
                                             borderSide:
-                                                BorderSide(color: Colors.red)),
+                                            BorderSide(color: Colors.red)),
                                         focusedBorder: OutlineInputBorder(
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(10)),
                                             borderSide:
-                                                BorderSide(color: Colors.red)),
+                                            BorderSide(color: Colors.red)),
                                       ),
                                       textAlign: TextAlign.center,
                                       keyboardType: TextInputType.number,

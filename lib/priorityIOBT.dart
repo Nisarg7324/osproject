@@ -235,8 +235,12 @@ class _PriorityIOBTState extends State<PriorityIOBT> {
       }
       cal++;
       _readyq[_tt][loc]=false;
-      _cardv[_tt][0]=loc;
+
       if (vis[loc] == 0) {
+
+        _cardv.add([0, 0, 0, 0]);
+        _cardvs.add(['0', '0', '0', '0']);
+        _cardv[_tt][0]=loc;
         _cardv[_tt][1]= max(_data[loc][1], st);
         _data[loc][8] = max(_data[loc][1], st) - _data[loc][1];
         _data[loc][5] = max(_data[loc][1], st) + _data[loc][2];
@@ -246,6 +250,9 @@ class _PriorityIOBTState extends State<PriorityIOBT> {
         _data[loc][1] = _data[loc][5] + _data[loc][3];
       }
       if (vis[loc] == 1) {
+        _cardv.add([0, 0, 0, 0]);
+        _cardvs.add(['0', '0', '0', '0']);
+        _cardv[_tt][0]=loc;
         _cardv[_tt][1]=max(_data[loc][1], st);
 
         _data[loc][5] = max(_data[loc][1], st) + _data[loc][4];
@@ -256,7 +263,7 @@ class _PriorityIOBTState extends State<PriorityIOBT> {
         _data[loc][7] = _data[loc][6] - _data[loc][2] - _data[loc][4];
       }
       for (int i = 0; i < 9; ++i) _datas[loc][i] = _data[loc][i].toString();
-      for (int i = 0; i < 4; ++i) _cardvs[loc][i] = _cardv[loc][i].toString();
+      for (int i = 0; i < 4; ++i) _cardvs[_tt][i] = _cardv[_tt][i].toString();
       vis[loc]++;
       _tt++;
     }
@@ -601,18 +608,28 @@ class _PriorityIOBTState extends State<PriorityIOBT> {
                   ),
                   Align(
                     alignment: Alignment.bottomCenter,
-                    child: (RaisedButton(
-                      color: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        side: BorderSide(color: Colors.red),
+                    child: Builder(
+                      builder: (context)=> (RaisedButton
+                        ( color: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          side: BorderSide(color: Colors.red),
+                        ),
+                        child: Text(
+                          'Delete Process',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onPressed: (){
+                          _RemoveRow();
+                          Scaffold.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Row Deleted'),
+                              )
+                          );
+                        },
+                      )
                       ),
-                      child: Text(
-                        'Delete Process',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      onPressed: _RemoveRow,
-                    )),
+                    ),
                   ),
                 ],
               ),

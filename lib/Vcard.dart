@@ -31,6 +31,7 @@ class customExpansionTilestate extends State {
     rql = rqqq;
     _r = rq;
     _t = tq;
+    //print('object');
   }
 
   Color _textcolor = Colors.black;
@@ -41,9 +42,9 @@ class customExpansionTilestate extends State {
     return ExpansionTile(
       trailing: isExpanded
           ? Icon(
-              FontAwesomeIcons.chevronCircleUp,
-              color: Colors.black,
-            )
+        FontAwesomeIcons.chevronCircleUp,
+        color: Colors.black,
+      )
           : Icon(FontAwesomeIcons.chevronCircleDown),
       title: Column(
         children: <Widget>[
