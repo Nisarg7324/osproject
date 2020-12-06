@@ -267,7 +267,7 @@ class _PriorityIOBTState extends State<PriorityIOBT> {
       vis[loc]++;
       _tt++;
     }
-    for (int i = 0; i < _counter; ++i) _data[i][0] = artime[i];
+    for (int i = 0; i < _counter; ++i) _data[i][1] = artime[i];
   }
 
   void _calculate() {
