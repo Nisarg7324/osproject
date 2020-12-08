@@ -257,6 +257,7 @@ class _LRTFState extends State<LRTF> {
       for (int i = 0; i < 5; ++i) _datas[loc][i] = _data[loc][i].toString();
       for (int i = 0; i < 4; ++i) _cardvs[_tt][i] = _cardv[_tt][i].toString();
     }
+    for (int i = 0; i < _counter; ++i) _data[i][1] = val[i];
   }
 
   void _calculate() {

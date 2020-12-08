@@ -257,6 +257,7 @@ class _SRTFState extends State<SRTF> {
       for (int i = 0; i < 5; ++i) _datas[loc][i] = _data[loc][i].toString();
       for (int i = 0; i < 4; ++i) _cardvs[_t][i] = _cardv[_t][i].toString();
     }
+    for (int i = 0; i < _counter; ++i) _data[i][1] = val[i];
   }
 
   void _calculate() {
